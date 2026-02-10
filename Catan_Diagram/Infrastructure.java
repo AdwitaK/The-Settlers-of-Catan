@@ -21,17 +21,16 @@ public abstract class Infrastructure{
 	 * 
 	 */
 	private Location location;
-	/**
-	 * 
-	 */
-	public Location location;
+	
 
 	/**
 	 * 
 	 * @param victoryPoints 
 	 * @param owner 
 	 */
-	public void Infrastructure(int victoryPoints, Trader owner){
+	public Infrastructure(int victoryPoints, Agent owner){
+		this.victoryPoints = victoryPoints;
+        this.owner = owner;
 	}
 
 	/**
@@ -42,16 +41,18 @@ public abstract class Infrastructure{
 
 	/**
 	 * 
-	 * @return 
+	 * @return victoryPoints
 	 */
 	public int getVictoryPoints(){
+		return victoryPoints;
 	}
 
 	/**
 	 * 
-	 * @return 
+	 * @return owner
 	 */
 	public int getOwner(){
+		return owner;
 	}
 
 	/**
@@ -59,12 +60,14 @@ public abstract class Infrastructure{
 	 * @param location 
 	 */
 	public void setLocation(Location location){
+		this.location = location;
 	}
 
 	/**
 	 * 
-	 * @return 
+	 * @return location
 	 */
 	public Location getLocation(){
+		return location;
 	}
 }

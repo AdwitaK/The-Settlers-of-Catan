@@ -18,7 +18,7 @@ public class ResourceCard{
 	 * Constructs a resource card
 	 * @param type The type of resource card to be created
 	 */
-	public void ResourceCard(ResourceType type){
+	public ResourceCard(ResourceType type){
 		this.resourceType = type;
 	}
 

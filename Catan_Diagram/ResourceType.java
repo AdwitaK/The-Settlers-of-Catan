@@ -20,7 +20,7 @@ public enum ResourceType {
 	/**
 	 * 
 	 */
-	SHEEP(2),
+	WOOL(2),
 	/**
 	 * 
 	 */
@@ -28,7 +28,7 @@ public enum ResourceType {
 	/**
 	 * 
 	 */
-	WHEAT(4),
+	GRAIN(4),
 	/**
 	 * 
 	 */

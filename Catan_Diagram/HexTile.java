@@ -46,7 +46,7 @@ public class HexTile{
 	 * @param nodes 
 	 * @param edges 
 	 */
-	public void HexTile(ResourceType resource, int landTileID, int token, Node[] nodes, Edge[] edges){
+	public HexTile(ResourceType resource, int landTileID, int token, Location[] nodes, Location[] edges){
 	}
 
 	/**

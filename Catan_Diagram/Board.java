@@ -4,6 +4,8 @@
 
 package Catan_Diagram;
 
+import java.util.List;
+import java.util.ArrayList;
 /************************************************************/
 /**
  * 
@@ -12,16 +14,41 @@ public class Board{
 	/**
 	 * 
 	 */
-	private HexTile[] tiles;
-	/**
-	 * 
-	 */
-	public HexTile[] hextile;
+	private List<HexTile> tiles;
+
+	private List<Location> nodes;
+	private List<Location> edges;
 
 	/**
 	 * 
 	 */
-	public void Board(){
+	public Board(){
+		tiles = new ArrayList<>();
+		nodes = new ArrayList<>();
+		edges = new ArrayList<>();
+
+		//Create all nodes on board
+		for(int i = 0; i<MapSkeleton.nodeCount; i++){
+			nodes.add(new Node(i));
+		}
+
+		//Create all edges on board
+		for(int i = 0; i<MapSkeleton.edges.length; i++){
+			edges.add(new Edge(MapSkeleton.edges[i][0], MapSkeleton.edges[i][1]));
+		}
+
+		//Create all hex tiles
+		for (int tileID = 0; tileID<MapSkeleton.numOfTiles; tileID++){
+			Location [] nodesToAdd = new Node [6];
+			Location [] edgesToAdd = new Edge [6];
+			for(int j = 0; j<6; j++){
+				nodesToAdd[j] = nodes.get(MapSkeleton.tileNodes[tileID][j]);
+				edgesToAdd[j] = edges.get(MapSkeleton.tileEdges[tileID][j]);
+			}
+
+			tiles.add(new HexTile(MapLayout.tileResource[tileID], tileID, MapLayout.tokens[tileID], nodesToAdd, edgesToAdd));
+		}
+
 	}
 
 	/**

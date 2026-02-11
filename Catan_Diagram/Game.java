@@ -4,70 +4,127 @@
 
 package Catan_Diagram;
 
-/************************************************************/
-/**
- * 
- */
+import java.util.Scanner;
+
 public class Game{
 	/**
-	 * 
+	 *
 	 */
 	private int maxRounds;
 	/**
-	 * 
+	 *
 	 */
 	private int currentRound;
 	/**
-	 * 
+	 *
 	 */
 	private Board board;
 	/**
-	 * 
+	 *
 	 */
 	private Trader[] agents;
 	/**
-	 * 
+	 *
 	 */
 	private Trader bank;
 	/**
-	 * 
+	 *
 	 */
 	private Dice dice;
-	/**
-	 * 
-	 */
-	public Board board;
-	/**
-	 * 
-	 */
-	public Trader[] trader;
-	/**
-	 * 
-	 */
-	public Dice dice;
 
+    //CH - add CurentPlayer
+
+    private Trader currentPlayer;
 	/**
-	 * 
-	 * @param rounds 
+	 *
+	 * @param rounds
 	 */
-	public void Game(int rounds){
+	public Game(int rounds, int numPlayers){//CH - add numPlayers
+        this.maxRounds = rounds;
+        if (numPlayers < 3 || numPlayers > 4) numPlayers = 4;
+        if (maxRounds > 8192) maxRounds = 8192;
+        for (int i = 0; i < numPlayers; i++){
+            agents[i] = new Agent(i+1);
+        }
+        bank = new Bank();
+        dice = new MultiDice(2);
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public void run(){
+        Scanner s  = new Scanner(System.in);
+        for(currentRound = 0; currentRound <= maxRounds; currentRound++){
+            for (Trader agent : agents){
+                currentPlayer = agent;
+                int rollSum = dice.roll();
+
+                if (rollSum != 7) produceResource(rollSum);
+
+                int buildChoice;
+                do{
+                    System.out.println("0 = Build ROAD");
+                    System.out.println("1 = Build SETTLEMENT");
+                    System.out.println("2 = Build CITY");
+                    System.out.println("3 = NO Build");
+                    System.out.print("Choice: ");
+
+                    buildChoice = s.nextInt();
+
+                    if (buildChoice >= 0 && buildChoice <= 2){
+                        if (build(buildChoice)) System.out.println("Built was successful!");
+                        else System.out.println("Built failed!");
+                    }
+                    else if (buildChoice == 3){
+                        System.out.println("Nothing was built");
+                    }
+                    else System.out.println("Invalid choice.");
+
+                } while (buildChoice != 3);
+
+            }//end of for each
+        }//end of for loop
+	}//end of run()
+
+
+	private void produceResource(int token){
+//        HexTile[] result = board.getResourceProdTile(token);
 	}
 
-	/**
-	 * 
-	 */
-	private void produceResource(){
-	}
 
-	/**
-	 * 
-	 */
-	private void build(){
-	}
-}
+	private boolean build(int toBuild){ //CH - change to boolean return
+        ResourceType[][] materials = {
+                {ResourceType.BRICK, ResourceType.LUMBER}, //Road
+                {ResourceType.BRICK, ResourceType.LUMBER, ResourceType.GRAIN, ResourceType.WOOL}, //Settlement
+                {ResourceType.GRAIN, ResourceType.GRAIN, ResourceType.ORE, ResourceType.ORE, ResourceType.ORE} //City
+        };
+
+        //ResourceType[] roadMaterials = {ResourceType.BRICK, ResourceType.LUMBER};
+        //ResourceType[] settlementMaterials = {ResourceType.BRICK, ResourceType.LUMBER, ResourceType.WHEAT, ResourceType.SHEEP};
+        //ResourceType[] cityMaterials = {ResourceType.WHEAT, ResourceType.WHEAT, ResourceType.ORE, ResourceType.ORE, ResourceType.ORE};
+        ResourceType[] recipe = materials[toBuild];
+
+
+        int[] original = currentPlayer.getResourceCount(); //gets player's array
+        int[] temp = new int[original.length];
+        //copy count over
+        System.arraycopy(original, 0, temp, 0, original.length);
+
+        for (ResourceType type : recipe){
+            int index = type.getIndex();
+            temp[index]--;
+
+            if (temp[index] < 0) {
+                System.out.println("Not enough resources!");
+                return false;  //not enough resources
+            }
+        }//end of for each
+
+        for (ResourceType type : recipe) {
+            Card transitionCard = currentPlayer.removeCard(type);
+            bank.addCard(transitionCard);
+        }
+        return true;
+    }//end of build
+}//end of Game class

@@ -3,84 +3,75 @@
 // --------------------------------------------------------
 
 package Catan_Diagram;
-
-/************************************************************/
-/**
- * 
- */
 public class HexTile{
-	/**
-	 * 
-	 */
-	private ResourceType resource;
-	/**
-	 * 
-	 */
-	private int landTileID;
-	/**
-	 * 
-	 */
-	private int token;
-	/**
-	 * 
-	 */
-	private Location[] nodes;
-	/**
-	 * 
-	 */
-	private Location[] edges;
-	/**
-	 * 
-	 */
-	public Location[] location;
-	/**
-	 * 
-	 */
-	public ResourceType resourcetype;
 
-	/**
-	 * 
-	 * @param resource 
-	 * @param landTileID 
-	 * @param token 
-	 * @param nodes 
-	 * @param edges 
-	 */
-	public HexTile(ResourceType resource, int landTileID, int token, Location[] nodes, Location[] edges){
-	}
+    private ResourceType resourcetype;
 
-	/**
-	 * 
-	 * @return 
-	 */
-	public Location[] getNodes(){
-	}
+    private int landTileID;
 
-	/**
-	 * 
-	 * @return 
-	 */
-	public Location[] getEdges(){
-	}
+    private int token;
 
-	/**
-	 * 
-	 * @return 
-	 */
-	public ResourceType getResourceType(){
-	}
+    private Location[] nodes;
 
-	/**
-	 * 
-	 * @return 
-	 */
-	public int getlandTileID(){
-	}
+    private Location[] edges;
 
-	/**
-	 * 
-	 * @return 
-	 */
-	public int getToken(){
-	}
-}
+    public Location[] location;
+
+    /**
+     *
+     * @param resource
+     * @param landTileID
+     * @param token
+     * @param nodes
+     * @param edges
+     */
+    public HexTile(ResourceType resource, int landTileID, int token, Location[] nodes, Location[] edges){
+        this.resourcetype = resource;
+        this.landTileID = landTileID;
+        this.token = token;
+        for (int i = 0; i < nodes.length; i++){
+            this.nodes[i] = nodes[i];
+            this.edges[i] = edges[i];
+        }
+    }//end of HexTile Constructor
+
+    /**
+     *
+     * @return
+     */
+    public Location[] getNodes(){
+        return nodes;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Location[] getEdges(){
+        return edges;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public ResourceType getResourceType(){
+        return resourcetype;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public int getlandTileID(){
+        return landTileID;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public int getToken(){
+        return token;
+    }
+}//end of HexTile class

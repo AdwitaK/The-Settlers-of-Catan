@@ -83,8 +83,24 @@ public class Game{
 
                 } while (buildChoice != 3);
 
-            }//end of for each
-        }//end of for loop
+            }//end of for each (one round)
+
+            /* Checking Victory Point status of each player */
+            int winnerID = -1;
+            System.out.println("Player's Victory Points: ");
+            for (Trader agent : agents){
+                int agentVicPoints = ((Agent) agent).getVictoryPoints();
+                System.out.println("Player " + ((Agent) agent).getId() + ": " + agentVicPoints);
+                if (agentVicPoints >= 10){
+                    winnerID = ((Agent) agent).getId();
+                    currentRound = maxRounds + 1; //breaks the rounds loop
+                    break; //gets out of for each loop
+                }
+            }//end of for each (check eac player's vicpoints)
+            if (winnerID != -1){
+                System.out.println("Player " + winnerID + "wins the Game!");
+            }//end of if (win message)
+        }//end of for loop (max round loop)
 	}//end of run()
 
 

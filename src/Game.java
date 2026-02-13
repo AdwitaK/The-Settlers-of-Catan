@@ -136,6 +136,7 @@ public class Game{
                                 Card cardFromBank = bank.removeCard(resourceType); //remove the card from the bank
                                 if (cardFromBank != null){ //checking if the bank had at least one card to give to the agent
                                     agent.addCard(cardFromBank);
+                                    System.out.println("Player " + agent.getId() + " gets " + resourceType + ".")
                                 } else {
                                     System.out.println("Bank is out of " + resourceType + " cards!");
                                 }

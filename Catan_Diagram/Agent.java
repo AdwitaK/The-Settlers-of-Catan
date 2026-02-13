@@ -36,7 +36,7 @@ public class Agent extends Trader{
 	/**
 	 * 
 	 */
-	public Infrastructure[] infrastructure;
+	private Infrastructure[] infrastructure;
 
 	/**
 	 * 
@@ -122,5 +122,13 @@ public class Agent extends Trader{
 
 	public int getInfraCount(){
 		return infraCount;
+	}
+
+	public int getId(){
+		return id;
+	}
+
+	public Infrastructure[] getInfrastructure(){
+		return infrastructure;
 	}
 }

@@ -15,14 +15,6 @@ public class HexTile{
     private Location[] nodes;
     private Location[] edges;
 
-    /**
-     *
-     * @param resource
-     * @param landTileID
-     * @param token
-     * @param nodes
-     * @param edges
-     */
     public HexTile(ResourceType resource, int landTileID, int token, Location[] nodes, Location[] edges){
         this.resourcetype = resource;
         this.landTileID = landTileID;

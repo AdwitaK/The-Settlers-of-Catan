@@ -88,4 +88,8 @@ public class Board{
         }
         return null;
     }
+
+	public List<HexTile> getTiles(){
+		return tiles;
+	}
 }

@@ -150,6 +150,11 @@ public class Game{
         }
 	}
 
+    
+
+
+
+
     public boolean build(Scanner scanner){
         int buildChoice;
         do{
@@ -422,6 +427,28 @@ public class Game{
     }//end of canBuildCity()
 
 
+    private giveResourceInitialSetup(Node node, Trader currentPlayer){
+        (Agent) player = currentPlayer;
+        
+        for (Hextile tile : board.getTiles()){
+            Location[] tileNodes = tile.getNodes();
+
+            for (Location tileNode : tileNodes){
+                if (tileNode == node){
+                    ResourceType type = tile.getResourceType();
+                    if(type != ResourceType.DESERT){
+                        Card card = bank.removeCard(type);
+
+                        if(card != null){
+                            player.addCard(card);
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
 
     private void initialSetup(Scanner scanner){
         //Forward order
@@ -446,6 +473,8 @@ public class Game{
 
             Edge roadSpot = setupRoadInput(scanner, settlementSpot);
             ((Agent)currentPlayer).buildRoad(roadSpot);
+            
+            giveResourceInitialSetup(settlementSpot, currentPlayer);
 
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Give starting resources!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         }//end of backwards turn order of players

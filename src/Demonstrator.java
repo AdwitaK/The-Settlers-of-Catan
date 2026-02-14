@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 /**
-<<<<<<< HEAD
 * Demonstrator class for the Settlers of Catan simulator.
 * 
 * This class is intentionally designed to:
@@ -26,12 +25,11 @@ import java.util.Scanner;
 * This class focuses purely on demonstration.
 * AlL game logic remains encapsulated inside the Game class,
 * following separation of concerns and Single Responsibility Principle.
-*/
 
-=======
+
  * A demonstrator class to showcase the functionality of the catan simulation
  */
->>>>>>> a9a4ee4b1a2d420082ecce174e1ee4330222e357
+
 public class Demonstrator {
     
 
@@ -48,12 +46,6 @@ public class Demonstrator {
     */
 
     public static void main(String[] args) {
-<<<<<<< HEAD
-        
-        //Game configuration
-=======
-        // Game configuration
->>>>>>> a9a4ee4b1a2d420082ecce174e1ee4330222e357
         int maxRounds;
         int numPlayers = 4; //Standard Catan player count
 

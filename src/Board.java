@@ -8,20 +8,13 @@ import java.util.List;
 import java.util.ArrayList;
 /************************************************************/
 /**
- * 
+ * This class is responsible for creating and maintaining the state of the game board.
  */
 public class Board{
-	/**
-	 * 
-	 */
 	private List<HexTile> tiles;
-
 	private List<Location> nodes;
 	private List<Location> edges;
 
-	/**
-	 * 
-	 */
 	public Board(){
 		tiles = new ArrayList<>();
 		nodes = new ArrayList<>();
@@ -51,11 +44,6 @@ public class Board{
 
 	}
 
-	/**
-	 * 
-	 * @param token 
-	 * @return 
-	 */
 	public HexTile[] getResourceProdTile(int token){ //getting the list of hextiles that has that corresponding token number
         HexTile[] producingTiles = {null, null};
         int i = 0;
@@ -72,7 +60,7 @@ public class Board{
     public Node getIDNode(int id){//CH
         for (Location location : nodes) {
             Node n = (Node) location;
-            if (n.getId() == id) {  //assuming Node has getId()
+            if (n.getId() == id) {  
                 return n;
             }
         }

@@ -6,6 +6,9 @@ package src;
 
 import java.util.*;
 
+/**
+ * This class represents the abstract entity of a trader, which holds resources, and can trade them.
+ */
 public abstract class Trader{
 	private int[] resourceCount;
     private List<Card> resourceHand;
@@ -36,7 +39,7 @@ public abstract class Trader{
 
         for (int i = 0; i < resourceHand.size(); i++) {
             Card c = resourceHand.get(i);
-            ResourceType resourceType = ResourceType.valueOf(c.getCardType());
+            ResourceType resourceType = ResourceType.valueOf(c.getCardType()); //remove
             if (getTypeFromCard(c) == type){
                 resourceHand.remove(i);
                 resourceCount[type.getIndex()]--;

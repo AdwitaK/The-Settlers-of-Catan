@@ -6,41 +6,19 @@ package src;
 
 /************************************************************/
 /**
- * 
+ * This class represents an agent, or a player in the simulated catan game. 
  */
 public class Agent extends Trader{
-	/**
-	 * 
-	 */
+
 	private int id;
-	/**
-	 * 
-	 */
 	private int victoryPoints;
-	/**
-	 * 
-	 */
 	private int roadsLeft;
-	/**
-	 * 
-	 */
 	private int citiesLeft;
-	/**
-	 * 
-	 */
 	private int settlementsLeft;
-	/**
-	 * 
-	 */
 	private int infraCount;
-	/**
-	 * 
-	 */
 	private Infrastructure[] infrastructure;
 
-	/**
-	 * 
-	 */
+
 	public Agent(int id){
 		this.id = id;
 		this.roadsLeft = 15;
@@ -51,9 +29,6 @@ public class Agent extends Trader{
         this.infrastructure = new Infrastructure[24];
 	}
 
-	/**
-	 * 
-	 */
 	public void buildRoad(Location location){
 		if (roadsLeft <= 0){
 			throw new IllegalStateException("There are no roads left to build. Sorry!");
@@ -66,9 +41,6 @@ public class Agent extends Trader{
 		roadsLeft--;
 	}
 
-	/**
-	 * 
-	 */
 	public void buildCity(Location location){
 		if (citiesLeft <= 0){
 			throw new IllegalStateException("There are no cities left to build. Sorry!");
@@ -81,9 +53,6 @@ public class Agent extends Trader{
 		citiesLeft--;
 	}
 
-	/**
-	 * 
-	 */
 	public void buildSettlement(Location location){
 		if (settlementsLeft <= 0){
 			throw new IllegalStateException("There are no settlements left to build. Sorry!");
@@ -99,10 +68,6 @@ public class Agent extends Trader{
 		
 	}
 
-	/**
-	 * 
-	 * @return 
-	 */
 	private int calculateVictoryPoints(){
 		int total = 0;
 		for (int i=0; i< infraCount; i++){
@@ -113,10 +78,6 @@ public class Agent extends Trader{
 		return victoryPoints;
 	}
 	
-	/**
-	 * 
-	 * @return 
-	 */
 	public int getVictoryPoints(){
 		return calculateVictoryPoints(); //calls the helper method above to get the victoryPoints
 	}

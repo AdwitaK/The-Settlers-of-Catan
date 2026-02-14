@@ -15,7 +15,7 @@ public class HexTile{
 
     private Location[] edges;
 
-    public Location[] location;
+    public Location[] location; //
 
     /**
      *

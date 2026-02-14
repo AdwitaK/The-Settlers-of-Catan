@@ -3,6 +3,10 @@
 // --------------------------------------------------------
 
 package src;
+/**
+ * This class acts as the bank entity of the game. It is responsible for maintaining the 
+ * resource cards in the game not held by players.
+ */
 
 public class Bank extends Trader{
 	public Bank(){

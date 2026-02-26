@@ -1,5 +1,3 @@
-package src;
-
 /**
  * A configuration file to choose the layout of the game map, and what tokens to place on each tile.
  */

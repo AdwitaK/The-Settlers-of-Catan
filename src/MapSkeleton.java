@@ -1,5 +1,3 @@
-package src;
-
 /**
  * A basic map configuration file. Has information a tile needs to know its nodes and edges.
  */

@@ -3,10 +3,13 @@
 // --------------------------------------------------------
 
 /************************************************************/
+
+import java.util.Scanner;
+
 /**
  * This class represents an agent, or a player in the simulated catan game. 
  */
-public class Agent extends Trader{
+public abstract class Agent extends Trader{
 
 	private int id;
 	private int victoryPoints;
@@ -92,4 +95,8 @@ public class Agent extends Trader{
         return infrastructure;
     }
 
+	//Methods to be overriden in HumanAgent and RandomAgent
+	public abstract boolean yesNoMove(Scanner scanner);
+
+	public abstract int chooseOption(Scanner scanner);
 }

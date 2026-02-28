@@ -3,6 +3,8 @@
 // --------------------------------------------------------
 
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Game{
     private int maxRounds;
@@ -41,22 +43,15 @@ public class Game{
             for (Trader agent : agents){
                 currentPlayer = agent;
                 System.out.println(currentRound + " / " + ((Agent)agent).getId() + ": Turn Start");
-                int rollSum = dice.roll();
-                System.out.println(currentRound + " / " + ((Agent)agent).getId() + ": Rolled a " + rollSum);
-    
-                /* Production Step */
-                if (rollSum != 7) produceResource(rollSum);
 
-                /* Building Step */
-                System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Building State");
-                String buildSomthing = scanner.nextLine().toLowerCase();
-                if (buildSomthing.equals("yes")){
-                    boolean builtSomething = build(scanner);
-                    if(builtSomething) System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Successful Build");
-
-                    else System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Build Nothing");
+                if (agent instanceof HumanAgent){
+                    ((HumanAgent) agent).takeTurn(this, scanner);
                 }
-                System.out.println();
+                else if(agent instanceof RandomAgent){
+                    ((RandomAgent) agent).takeTurn(this, scanner);
+                }
+
+                System.out.println(currentRound + " / " + ((Agent)agent).getId() + ": Turn End\n");
             }//end of each agent's turn
 
             /* Checking Victory Point status of each player */
@@ -79,6 +74,122 @@ public class Game{
             System.out.println();
         }//end of for loop (max round loop)
     }//end of run()
+
+    //NEW METHODS ADDED FOR ASSIGNMENT 2 BELOW ----- :
+
+    //Method for parsing the input, by using REGEX
+    public boolean processCommand(String input) { //return value is not used in program, but should be used for testing
+
+        input = input.trim().toLowerCase();
+        Agent player = (Agent) currentPlayer;
+        int playerId = player.getId();
+
+        // ---------- ROLL ----------
+        if (input.matches("^roll$")) {
+            int roll = dice.roll();
+            System.out.println(currentRound + " / " + playerId + ": Rolled a " + roll); //not using printMessage because we have roll variable
+
+            if (roll != 7) produceResource(roll);
+            return true; //false ?
+        }
+
+        // ---------- LIST ----------
+        if (input.matches("^list$")) {
+            printMessage(player.getHandString());
+            return true;
+        }
+
+        // ---------- BUILD ----------
+        Pattern buildPattern = Pattern.compile("^build\\s+(road|settlement|city)\\s+(\\d+)(?:\\s+(\\d+))?$");
+        Matcher matcher = buildPattern.matcher(input);
+
+        if (matcher.matches()) {
+
+            String type = matcher.group(1); //type of build : road, settlement or city
+            String first = matcher.group(2); //1st number, start node for road, or just node ID for settlement and city
+            String second = matcher.group(3); // 2nd number, end node for road, null for settlement and city
+
+            return handleBuild(type, first, second);
+        }
+
+        printMessage("Invalid command.");
+        return false;
+    }
+
+
+
+    //Method for calling the right build methods accordingly, depending on the input
+    //Only being called by processCommand method above
+    private boolean handleBuild(String type, String first, String second) {
+        Agent player = (Agent) currentPlayer;
+
+        if (type.equals("road")) {
+            if (second == null) {
+                printMessage("Road requires two node IDs.");
+                return false;
+            }
+
+            int a = Integer.parseInt(first);
+            int b = Integer.parseInt(second);
+            Edge edge = board.getEdgeByIDNodes(a, b);
+
+            if (edge == null || !canBuildRoad(edge)) {
+                printMessage("Illegal road placement.");
+                return false;
+            }
+
+            if (!resourcePayement(0)) {
+                printMessage("Insufficient resources.");
+                return false;
+            }
+
+            player.buildRoad(edge);
+            return true;
+        }
+
+        if (type.equals("settlement")) {
+            int id = Integer.parseInt(first);
+            Node node = board.getIDNode(id);
+
+            if (node == null || !canBuildSettlement(node)) {
+                printMessage("Illegal settlement placement.");
+                return false;
+            }
+
+            if (!resourcePayement(1)) {
+                printMessage("Insufficient resources.");
+                return false;
+            }
+
+            player.buildSettlement(node);
+            return true;
+        }
+
+        if (type.equals("city")) {
+            int id = Integer.parseInt(first);
+            Node node = board.getIDNode(id);
+
+            if (node == null || !canBuildCity(node)) {
+                printMessage("Illegal city placement.");
+                return false;
+            }
+
+            if (!resourcePayement(2)) {
+                printMessage("Insufficient resources.");
+                return false;
+            }
+
+            player.buildCity(node);
+            return true;
+        }
+
+        return false;
+    }
+
+    //Helper method to print; it is public because Agent subclasses use this method too
+    public void printMessage(String message){
+        System.out.println(currentRound + " / " + ((Agent) currentPlayer).getId() + ": " + message);
+    }
 
 
     //find the hextile that has that corresponding token

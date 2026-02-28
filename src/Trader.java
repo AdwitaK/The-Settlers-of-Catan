@@ -51,9 +51,24 @@ public abstract class Trader{
         return ResourceType.valueOf(c.getCardType());
     }
 
-
     public int[] getResourceCount(){ //CH - new method
         return resourceCount;
+    }
+
+    //Displaying the resourceHand of a Trader
+    public String getHandString() {
+        if (resourceHand.isEmpty()) return "[Empty]";
+
+        StringBuilder sb = new StringBuilder();
+        ResourceType[] types = ResourceType.values();
+        for (ResourceType type : types) {
+            if (type == ResourceType.DESERT) continue;
+            int count = resourceCount[type.getIndex()];
+            if (count > 0) {
+                sb.append(type).append(": ").append(count).append(" | ");
+            }
+        }
+        return sb.toString();
     }
 
 }//end of Trader

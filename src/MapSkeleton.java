@@ -2,6 +2,7 @@
  * A basic map configuration file. Has information a tile needs to know its nodes and edges.
  */
 public class MapSkeleton {
+    public static final int maxRounds = 8192;
     public static final int nodeCount = 54;
     public static final int numOfTiles = 19;
     

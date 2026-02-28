@@ -18,12 +18,15 @@ public class Game{
     public Game(int rounds, int numPlayers){//CH - add numPlayers
         this.maxRounds = rounds;
 
-        if (numPlayers < 3 || numPlayers > 4) numPlayers = 4;
+        if (numPlayers < 3 || numPlayers > 4) numPlayers = 4; //defaulting to 4 players.
         agents = new Agent[numPlayers];
 
-        if (maxRounds > 8192) maxRounds = 8192;
-        for (int i = 0; i < numPlayers; i++){
-            agents[i] = new Agent(i+1);
+        if (maxRounds > MapSkeleton.maxRounds) maxRounds = 8192; //default
+
+        agents[0] = new HumanAgent(1); //first player is human
+
+        for (int i = 1; i < numPlayers; i++){
+            agents[i] = new RandomAgent(i+1); //the other players are computers
         }
 
         board = new Board();

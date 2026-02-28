@@ -17,12 +17,12 @@ public class HumanAgent extends Agent{
                     game.processCommand(input);
                     rolled = true;
                 } else {
-                    game.printMessage("You already rolled.");
+                    game.printMessage("Already rolled.");
                 }
             }
             else if (input.startsWith("build")) {
                 if (!rolled) {
-                    game.printMessage("You must roll first.");
+                    game.printMessage("Must roll first.");
                 } else {
                     game.processCommand(input);
                     break; // turn ends after build attempt
@@ -30,6 +30,14 @@ public class HumanAgent extends Agent{
             }
             else if (input.equalsIgnoreCase("list")) {
                 game.processCommand(input);
+            }
+            else if (input.equalsIgnoreCase("go")) {
+                if(!rolled){
+                    game.printMessage("Must roll first.");
+                } else{
+                    game.printMessage("Decides to proceed, with no more actions.");
+                    break;
+                }
             }
             else {
                 game.printMessage("Invalid command.");

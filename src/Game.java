@@ -99,6 +99,11 @@ public class Game{
             return true;
         }
 
+        // ---------- GO ----------
+        if (input.matches("^go$")) {
+            return true;
+        }
+
         // ---------- BUILD ----------
         Pattern buildPattern = Pattern.compile("^build\\s+(road|settlement|city)\\s+(\\d+)(?:\\s+(\\d+))?$");
         Matcher matcher = buildPattern.matcher(input);

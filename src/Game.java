@@ -12,16 +12,15 @@ public class Game{
     private Trader bank;
     private Dice dice;
 
-    //CH - add CurentPlayer
     private Trader currentPlayer;
 
-    public Game(int rounds, int numPlayers){//CH - add numPlayers
+    public Game(int rounds, int numPlayers){
         this.maxRounds = rounds;
 
         if (numPlayers < 3 || numPlayers > 4) numPlayers = 4;
         agents = new Agent[numPlayers];
 
-        if (maxRounds > 8192) maxRounds = 8192;
+        if (maxRounds > MapSkeleton.maxRounds) maxRounds = MapSkeleton.maxRounds;
         for (int i = 0; i < numPlayers; i++){
             agents[i] = new Agent(i+1);
         }
@@ -202,7 +201,6 @@ public class Game{
 
                 //Check and deduct resources first
                 if (!resourcePayement(buildChoice)) {
-                    //System.out.println("Insufficient resources.");
                     System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Insufficient resources");
                     return false;
                 }
@@ -215,18 +213,16 @@ public class Game{
                 catch (IllegalStateException e) {
                     //Build failed so refund the resources
                     refundResources(buildChoice);
-                    //System.out.println("Build failed: " + e.getMessage());
                     System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": " + e.getMessage());
                     return false;
                 }
             }//end building City
 
             else System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Invalid build choice. Try Again");
-                //System.out.println("Invalid choice. Try Again");
         } while (true);
 
     }//end of build()
-    private boolean resourcePayement(int toBuild){ //CH - change to boolean return
+    private boolean resourcePayement(int toBuild){
 
         ResourceType[][] materials = {
                 {ResourceType.BRICK, ResourceType.LUMBER}, //Road
@@ -276,25 +272,19 @@ public class Game{
         Edge edge = null;
 
         while (edge == null){
-            //System.out.print("Enter start node ID: ");
 
             String aStr = s.nextLine();
             int a = Integer.parseInt(aStr.trim());
             System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Selects start node (#" + a + ") of edge");
-            //int a = s.nextInt();
-            //s.nextLine();
 
-            //System.out.print("Enter end node ID: ");
+
             String bStr = s.nextLine();
             int b = Integer.parseInt(bStr.trim());
             System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Selects end node (#" + b + ") of edge");
-            //int b = s.nextLine();
-            //s.nextLine();
 
             edge = board.getEdgeByIDNodes(a, b);
 
             if (edge == null) System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Invalid node IDs. Try Again");
-                //System.out.println("Invalid node IDs. Please try again."); // if edge is still null after method, the search failed
         }
         return edge;
     }
@@ -302,19 +292,14 @@ public class Game{
         Node node = null;
 
         while (node == null){
-            //System.out.print("Enter node ID: ");
-            //int id = s.nextInt();
             String idStr = s.nextLine();
             int id = Integer.parseInt(idStr.trim());
             System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Selects node (#" + idStr + ")");
-            //s.nextLine();
-            //s.nextLine();
 
             node = board.getIDNode(id);
 
             if (node == null){// if node is still null after method, the search failed
                 System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Invalid node ID. Try Again");
-                //System.out.println("Invalid node ID. Please try again.");
             }
         }
         return node;
@@ -371,7 +356,7 @@ public class Game{
         return false;
     }//end of canBuildRoad
 
-    private boolean canBuildSettlement(Node node){ //Ch
+    private boolean canBuildSettlement(Node node){
         Agent player = (Agent) currentPlayer;
         if (node.isOccupied()) return false;
 

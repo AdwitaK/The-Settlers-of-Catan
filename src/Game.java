@@ -254,107 +254,6 @@ public class Game{
         }
     }
 
-    private boolean build(Scanner scanner){
-        int buildChoice;
-        do{
-            String buildChoiceStr = scanner.nextLine();
-            buildChoice = Integer.parseInt(buildChoiceStr.trim());
-
-            if (buildChoice == 3){
-                return false;
-            }
-
-            boolean legalBuild = false;
-
-            if (buildChoice == 0) { // Road
-                Location buildTarget = roadEdgeInput(scanner);
-                legalBuild = canBuildRoad((Edge) buildTarget);
-
-                if (!legalBuild) {
-                    System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Illegal build");
-                    return false;
-                }
-
-                //Check and deduct resources first
-                if (!resourcePayement(buildChoice)) {
-                    System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Insufficient resources");
-                    return false;
-                }
-                //Attempt to build
-                try {
-                    ((Agent) currentPlayer).buildRoad(buildTarget);
-                    System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Build a Road between node #" + ((Edge) buildTarget).getStart() + " and node #" + ((Edge) buildTarget).getEnd());
-                    return true;   //success and resources already deducted
-                }
-                catch (IllegalStateException e) {
-                    //Build failed so refund the resources
-                    refundResources(buildChoice);
-                    System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": " + e.getMessage());
-                    return false;
-                }
-            }//end of Road
-
-            else if (buildChoice == 1){//Settlement
-                Location buildTarget = buildingNodeInput(scanner); //get user's input for location of settlement
-                legalBuild = canBuildSettlement((Node) buildTarget); //Checks if the user can build settlement at target
-
-                if (!legalBuild){
-                    System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Illegal build");
-                    return false;
-                }
-                //Check and deduct resources first
-                if (!resourcePayement(buildChoice)) {
-                    System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Insufficient resources");
-                    return false;
-                }
-                //Attempt to build
-                try {
-                    ((Agent) currentPlayer).buildSettlement(buildTarget);
-                    System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Build a Settlement at node #" + ((Node) buildTarget).getId());
-                    return true;   //success and resources already deducted
-                }
-                catch (IllegalStateException e) {
-                    //Build failed so refund the resources
-                    refundResources(buildChoice);
-                    System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": " + e.getMessage());
-                    return false;
-                }
-            }//end building Settlement
-            else if (buildChoice == 2){//City
-                Location buildTarget = buildingNodeInput(scanner); //get user's input for location of settlement
-                legalBuild = canBuildCity((Node) buildTarget);
-
-                if (!legalBuild){
-                    System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Illegal build");
-                    return false;
-                }
-
-                //Check and deduct resources first
-                if (!resourcePayement(buildChoice)) {
-                    //System.out.println("Insufficient resources.");
-                    System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Insufficient resources");
-                    return false;
-                }
-                //Attempt to build
-                try {
-                    ((Agent) currentPlayer).buildCity(buildTarget);
-                    System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Build a City at node #" + ((Node) buildTarget).getId());
-                    return true;   //success and resources already deducted
-                }
-                catch (IllegalStateException e) {
-                    //Build failed so refund the resources
-                    refundResources(buildChoice);
-                    //System.out.println("Build failed: " + e.getMessage());
-                    System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": " + e.getMessage());
-                    return false;
-                }
-            }//end building City
-
-            else System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Invalid build choice. Try Again");
-                //System.out.println("Invalid choice. Try Again");
-        } while (true);
-
-    }//end of build()
     private boolean resourcePayement(int toBuild){ //CH - change to boolean return
 
         ResourceType[][] materials = {
@@ -631,7 +530,6 @@ public class Game{
         // Pick one randomly from all valid edges that we have added
         return validEdges.get(new java.util.Random().nextInt(validEdges.size()));
     }
-
 
 
 

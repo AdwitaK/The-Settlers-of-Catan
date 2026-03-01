@@ -110,7 +110,6 @@ public abstract class Agent extends Trader{
 
 
 	//Methods to be overriden in HumanAgent and RandomAgent
-	public abstract boolean yesNoMove(Scanner scanner);
+	public abstract void takeTurn(Game game, Scanner scanner);
 
-	public abstract int chooseOption(Scanner scanner);
 }

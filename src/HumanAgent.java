@@ -6,34 +6,44 @@ public class HumanAgent extends Agent{
     }
 
     @Override
-    public boolean yesNoMove(Scanner scanner){
-        while(true){
-            System.out.print("Do you want to build something? (yes/no): ");
-            String input = scanner.nextLine().trim().toLowerCase();
-            if (input.equals("yes")){
-                return true;
+    public void takeTurn(Game game, Scanner scanner){
+        boolean rolled = false;
+
+        while (true) {
+            String input = scanner.nextLine();
+
+            if (input.equalsIgnoreCase("roll")) {
+                if (!rolled) {
+                    game.processCommand(input);
+                    rolled = true;
+                } else {
+                    game.printMessage("Already rolled.");
+                }
             }
-            else if (input.equals("no")){
-                return false;
+            else if (input.startsWith("build")) {
+                if (!rolled) {
+                    game.printMessage("Must roll first.");
+                } else {
+                    game.processCommand(input);
+                    break; // turn ends after build attempt
+                }
             }
-            System.out.println("Invalid input. Please type yes or no.");
+            else if (input.equalsIgnoreCase("list")) {
+                game.processCommand(input);
+            }
+            else if (input.equalsIgnoreCase("go")) {
+                if(!rolled){
+                    game.printMessage("Must roll first.");
+                } else{
+                    game.printMessage("Decides to proceed, with no more actions.");
+                    break;
+                }
+            }
+            else {
+                game.printMessage("Invalid command.");
+            }
         }
     }
 
-    @Override
-    public int chooseOption(Scanner scanner) {
-        while (true) {
-            System.out.println("Choose what to build:");
-            System.out.println("1: Road, 2: Settlement, 3: City, 4: Nothing");
-            String input = scanner.nextLine().trim();
-            try {
-                int choice = Integer.parseInt(input);
-                if (choice >= 1 && choice <= 4) {
-                    return choice;
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid choice. Enter a number between 1 and 4.");
-            }
-        }
-    }
+
 }

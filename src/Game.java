@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Game{
     private int maxRounds;
@@ -13,6 +15,7 @@ public class Game{
     private Board board;
     private Trader[] agents;
     private Trader bank;
+
     private Dice dice;
 
     //CH - add CurentPlayer
@@ -44,26 +47,22 @@ public class Game{
             for (Trader agent : agents){
                 currentPlayer = agent;
                 System.out.println(currentRound + " / " + ((Agent)agent).getId() + ": Turn Start");
-                int rollSum = dice.roll();
-                System.out.println(currentRound + " / " + ((Agent)agent).getId() + ": Rolled a " + rollSum);
-    
-                /* Production Step */
-                if (rollSum != 7) produceResource(rollSum);
-                else{
-                    Robber robber = board.getRobber();
-                    robberPlay(robber);
+
+                if (agent instanceof HumanAgent){
+                    ((HumanAgent) agent).takeTurn(this, scanner);
+                }
+                else if(agent instanceof RandomAgent){
+                    ((RandomAgent) agent).takeTurn(this, scanner);
+                    System.out.println("Computer turn ended. Type 'go' to move to the next player.");
+                    while (true) {
+                        String wait = scanner.nextLine().trim();
+                        if (wait.equalsIgnoreCase("go")) {
+                            break;
+                        }
+                    }
                 }
 
-                /* Building Step */
-                System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Building State");
-                String buildSomthing = scanner.nextLine().toLowerCase();
-                if (buildSomthing.equals("yes")){
-                    boolean builtSomething = build(scanner);
-                    if(builtSomething) System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Successful Build");
-
-                    else System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Build Nothing");
-                }
-                System.out.println();
+                System.out.println(currentRound + " / " + ((Agent)agent).getId() + ": Turn End\n");
             }//end of each agent's turn
 
             /* Checking Victory Point status of each player */
@@ -86,6 +85,131 @@ public class Game{
             System.out.println();
         }//end of for loop (max round loop)
     }//end of run()
+
+    //NEW METHODS ADDED FOR ASSIGNMENT 2 BELOW ----- :
+
+    //Method for parsing the input, by using REGEX
+    public boolean processCommand(String input) { //return value is not used in program, but should be used for testing
+
+        input = input.trim().toLowerCase();
+        Agent player = (Agent) currentPlayer;
+        int playerId = player.getId();
+
+        // ---------- ROLL ----------
+        if (input.matches("^roll$")) {
+            int roll = dice.roll();
+            System.out.println(currentRound + " / " + playerId + ": Rolled a " + roll); //not using printMessage because we have roll variable
+
+            if (roll != 7) produceResource(roll);
+            else{
+                Robber robber = board.getRobber();
+                robberPlay();
+            }
+            return true; //false ?
+        }
+
+        // ---------- LIST ----------
+        if (input.matches("^list$")) {
+            printMessage(player.getHandString());
+            return true;
+        }
+
+        // ---------- GO ----------
+        if (input.matches("^go$")) {
+            return true;
+        }
+
+        // ---------- BUILD ----------
+        Pattern buildPattern = Pattern.compile("^build\\s+(road|settlement|city)\\s+(\\d+)(?:\\s+(\\d+))?$");
+        Matcher matcher = buildPattern.matcher(input);
+
+        if (matcher.matches()) {
+
+            String type = matcher.group(1); //type of build : road, settlement or city
+            String first = matcher.group(2); //1st number, start node for road, or just node ID for settlement and city
+            String second = matcher.group(3); // 2nd number, end node for road, null for settlement and city
+
+            return handleBuild(type, first, second);
+        }
+
+        printMessage("Invalid command.");
+        return false;
+    }
+
+
+
+    //Method for calling the right build methods accordingly, depending on the input
+    //Only being called by processCommand method above
+    private boolean handleBuild(String type, String first, String second) {
+        Agent player = (Agent) currentPlayer;
+
+        if (type.equals("road")) {
+            if (second == null) {
+                printMessage("Road requires two node IDs.");
+                return false;
+            }
+
+            int a = Integer.parseInt(first);
+            int b = Integer.parseInt(second);
+            Edge edge = board.getEdgeByIDNodes(a, b);
+
+            if (edge == null || !canBuildRoad(edge)) {
+                printMessage("Illegal road placement.");
+                return false;
+            }
+
+            if (!resourcePayement(0)) {
+                printMessage("Insufficient resources.");
+                return false;
+            }
+
+            player.buildRoad(edge);
+            return true;
+        }
+
+        if (type.equals("settlement")) {
+            int id = Integer.parseInt(first);
+            Node node = board.getIDNode(id);
+
+            if (node == null || !canBuildSettlement(node)) {
+                printMessage("Illegal settlement placement.");
+                return false;
+            }
+
+            if (!resourcePayement(1)) {
+                printMessage("Insufficient resources.");
+                return false;
+            }
+
+            player.buildSettlement(node);
+            return true;
+        }
+
+        if (type.equals("city")) {
+            int id = Integer.parseInt(first);
+            Node node = board.getIDNode(id);
+
+            if (node == null || !canBuildCity(node)) {
+                printMessage("Illegal city placement.");
+                return false;
+            }
+
+            if (!resourcePayement(2)) {
+                printMessage("Insufficient resources.");
+                return false;
+            }
+
+            player.buildCity(node);
+            return true;
+        }
+
+        return false;
+    }
+
+    //Helper method to print; it is public because Agent subclasses use this method too
+    public void printMessage(String message){
+        System.out.println(currentRound + " / " + ((Agent) currentPlayer).getId() + ": " + message);
+    }
 
 
     //find the hextile that has that corresponding token
@@ -135,107 +259,6 @@ public class Game{
         }
     }
 
-    private boolean build(Scanner scanner){
-        int buildChoice;
-        do{
-            String buildChoiceStr = scanner.nextLine();
-            buildChoice = Integer.parseInt(buildChoiceStr.trim());
-
-            if (buildChoice == 3){
-                return false;
-            }
-
-            boolean legalBuild = false;
-
-            if (buildChoice == 0) { // Road
-                Location buildTarget = roadEdgeInput(scanner);
-                legalBuild = canBuildRoad((Edge) buildTarget);
-
-                if (!legalBuild) {
-                    System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Illegal build");
-                    return false;
-                }
-
-                //Check and deduct resources first
-                if (!resourcePayement(buildChoice)) {
-                    System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Insufficient resources");
-                    return false;
-                }
-                //Attempt to build
-                try {
-                    ((Agent) currentPlayer).buildRoad(buildTarget);
-                    System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Build a Road between node #" + ((Edge) buildTarget).getStart() + " and node #" + ((Edge) buildTarget).getEnd());
-                    return true;   //success and resources already deducted
-                }
-                catch (IllegalStateException e) {
-                    //Build failed so refund the resources
-                    refundResources(buildChoice);
-                    System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": " + e.getMessage());
-                    return false;
-                }
-            }//end of Road
-
-            else if (buildChoice == 1){//Settlement
-                Location buildTarget = buildingNodeInput(scanner); //get user's input for location of settlement
-                legalBuild = canBuildSettlement((Node) buildTarget); //Checks if the user can build settlement at target
-
-                if (!legalBuild){
-                    System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Illegal build");
-                    return false;
-                }
-                //Check and deduct resources first
-                if (!resourcePayement(buildChoice)) {
-                    System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Insufficient resources");
-                    return false;
-                }
-                //Attempt to build
-                try {
-                    ((Agent) currentPlayer).buildSettlement(buildTarget);
-                    System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Build a Settlement at node #" + ((Node) buildTarget).getId());
-                    return true;   //success and resources already deducted
-                }
-                catch (IllegalStateException e) {
-                    //Build failed so refund the resources
-                    refundResources(buildChoice);
-                    System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": " + e.getMessage());
-                    return false;
-                }
-            }//end building Settlement
-            else if (buildChoice == 2){//City
-                Location buildTarget = buildingNodeInput(scanner); //get user's input for location of settlement
-                legalBuild = canBuildCity((Node) buildTarget);
-
-                if (!legalBuild){
-                    System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Illegal build");
-                    return false;
-                }
-
-                //Check and deduct resources first
-                if (!resourcePayement(buildChoice)) {
-                    //System.out.println("Insufficient resources.");
-                    System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Insufficient resources");
-                    return false;
-                }
-                //Attempt to build
-                try {
-                    ((Agent) currentPlayer).buildCity(buildTarget);
-                    System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Build a City at node #" + ((Node) buildTarget).getId());
-                    return true;   //success and resources already deducted
-                }
-                catch (IllegalStateException e) {
-                    //Build failed so refund the resources
-                    refundResources(buildChoice);
-                    //System.out.println("Build failed: " + e.getMessage());
-                    System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": " + e.getMessage());
-                    return false;
-                }
-            }//end building City
-
-            else System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Invalid build choice. Try Again");
-                //System.out.println("Invalid choice. Try Again");
-        } while (true);
-
-    }//end of build()
     private boolean resourcePayement(int toBuild){ //CH - change to boolean return
 
         ResourceType[][] materials = {
@@ -447,32 +470,73 @@ public class Game{
     private void initialSetup(Scanner scanner){
         //Forward order
         for (Trader agent : agents){
-            currentPlayer = agent;
-            System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Selecting Initial Settlement and Road");
-
-            Node settlementSpot = setupSettlementInput(scanner);
-            ((Agent)currentPlayer).buildSettlement(settlementSpot);
-
-            Edge roadSpot = setupRoadInput(scanner, settlementSpot);
-            ((Agent)currentPlayer).buildRoad(roadSpot);
+            executeSetupTurn(agent, scanner, "Initial");
             System.out.println();
         }//end of forward turn order of players
         System.out.println();
         //Reverse Order
         for (int i = agents.length - 1; i >= 0; i--){
-            currentPlayer = agents[i];
-            System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Selecting Secondary Settlement and Road");
-
-            Node settlementSpot = setupSettlementInput(scanner);
-            ((Agent)currentPlayer).buildSettlement(settlementSpot);
-
-            Edge roadSpot = setupRoadInput(scanner, settlementSpot);
-            ((Agent)currentPlayer).buildRoad(roadSpot);
-
-            giveResourceInitialSetup(settlementSpot, currentPlayer);
-            System.out.println();
+            executeSetupTurn(agents[i], scanner, "Secondary");
         }//end of backwards turn order of players
     }//end of initialSetup()
+
+    //Created this helper method for initialSetup method, to avoid duplicate code for forward and reverse order
+    private void executeSetupTurn(Trader agent, Scanner scanner, String phase){
+        currentPlayer = agent;
+        Agent a = (Agent) agent;
+        System.out.println(currentRound + " / " + a.getId() + ": Selecting " + phase + " Settlement and Road");
+
+        Node settlementSpot = null;
+        Edge roadSpot = null;
+
+        if (a instanceof HumanAgent){
+            settlementSpot = setupSettlementInput(scanner);
+            roadSpot = setupRoadInput(scanner, settlementSpot);
+        }
+        else if (agent instanceof RandomAgent){
+            settlementSpot = findRandomValidSettlement();
+            roadSpot = findRandomValidRoad(settlementSpot);
+        }
+        a.buildSettlement(settlementSpot);
+        a.buildRoad(roadSpot);
+        System.out.println(currentRound + " / " + a.getId() + ": Placed " + phase + " Infrastructure");
+
+        if (phase.equals("Secondary") && settlementSpot != null){
+            giveResourceInitialSetup(settlementSpot, agent);
+        }
+    }
+
+    private Node findRandomValidSettlement() {
+        List<Node> validNodes = new ArrayList<>();
+        // We get all nodes, so we are iterating 0 to 53
+        for (int i = 0; i < 54; i++) {
+            Node n = board.getIDNode(i);
+            if (n != null && !n.isOccupied() && noAdjacentSettlements(n)) {
+                validNodes.add(n);
+            }
+        }
+        // Pick one randomly from all valid nodes that we have added
+        return validNodes.get(new java.util.Random().nextInt(validNodes.size()));
+    }
+
+    private Edge findRandomValidRoad(Node settlement) {
+        List<Edge> validEdges = new ArrayList<>();
+        int nodeId = settlement.getId();
+
+        // Check all edges in the MapSkeleton
+        for (int[] e : MapSkeleton.edges) {
+            if (e[0] == nodeId || e[1] == nodeId) {
+                Edge edge = board.getEdgeByIDNodes(e[0], e[1]);
+                if (edge != null && !edge.isOccupied()) {
+                    validEdges.add(edge);
+                }
+            }
+        }
+        // Pick one randomly from all valid edges that we have added
+        return validEdges.get(new java.util.Random().nextInt(validEdges.size()));
+    }
+
+
 
     private Node setupSettlementInput(Scanner scanner){
         while (true){
@@ -543,7 +607,7 @@ public class Game{
         List<HexTile> tiles = board.getTiles();
         HexTile targetTile;
         do {
-            int randomTileID = rand.nextInt(tiles.size()));
+            int randomTileID = rand.nextInt(tiles.size());
             targetTile = tiles.get(randomTileID);
         } while (!robber.moveRobber(targetTile)); //the loops runs again if the random id was the same as the old location of the robber
 

@@ -6,6 +6,7 @@
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 /**
@@ -130,12 +131,12 @@ public abstract class Agent extends Trader{
         return infrastructure;
     }
 
-    public List<Card> discardHalfOfHand(){//CH2
+    public List<Card> discardHalfOfHand(Random random){//CH2
         List<Card> discardedCards = new ArrayList<>();
         int discardCount = getTotalCardCount() / 2;
 
         for (int i = 0; i < discardCount; i++){
-            discardedCards.add(removeRandomCard());
+            discardedCards.add(removeRandomCard(random));
         }
         return discardedCards;
     }

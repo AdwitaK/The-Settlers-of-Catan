@@ -23,6 +23,7 @@ public class Game{
     //CH - add CurentPlayer
     private Trader currentPlayer;
 
+    @SuppressWarnings("java:S2245")
     public Game(int rounds, int numPlayers){//CH - add numPlayers
         this.maxRounds = rounds;
         this.random = new Random();
@@ -34,7 +35,7 @@ public class Game{
         agents[0] = new HumanAgent(1); //first player is human
 
         for (int i = 1; i < numPlayers; i++){
-            agents[i] = new RandomAgent(i+1); //the other players are computers
+            agents[i] = new RandomAgent(i+1, random); //the other players are computers
         }
 
         board = new Board();

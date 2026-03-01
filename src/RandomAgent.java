@@ -3,10 +3,11 @@ import java.util.Scanner;
 
 public class RandomAgent extends Agent{
 
-    private Random rand = new Random();
+    private Random rand;
 
-    public RandomAgent(int id){
+    public RandomAgent(int id, Random random){
         super(id);
+        rand = random;
     }
 
     @Override

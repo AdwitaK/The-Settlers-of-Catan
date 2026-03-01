@@ -83,7 +83,6 @@ public class Demonstrator {
             game.run(consoleScanner);
         } catch (Exception e) {
             System.err.println("Fatal Game Error: " + e.getMessage());
-            e.printStackTrace();
         } finally {
             consoleScanner.close();
             System.out.println("\n↳ Simulation Completed");

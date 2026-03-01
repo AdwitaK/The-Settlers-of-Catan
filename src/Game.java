@@ -308,6 +308,54 @@ public class Game{
         }
     }
 
+    public List<Edge> getLegalRoadMoves(Agent agent) {
+        List<Edge> legalEdges = new ArrayList<>();
+        //Save state to ensure we don't accidentally skip a human's turn
+        Trader original = this.currentPlayer;
+        this.currentPlayer = agent;
+
+        for (Edge e : board.getAllEdges()) {
+            if (e != null && this.canBuildRoad(e)) {
+                legalEdges.add(e);
+            }
+        }
+
+        this.currentPlayer = original; //Restore original turn state
+        return legalEdges;
+    }
+
+    public List<Node> getLegalSettlementMoves(Agent agent) {
+        List<Node> legalNodes = new ArrayList<>();
+        //Save state to ensure we don't accidentally skip a human's turn
+        Trader original = this.currentPlayer;
+        this.currentPlayer = agent;
+
+        for (Node n : board.getAllNodes()) {
+            if (n != null && this.canBuildSettlement(n)) {
+                legalNodes.add(n);
+            }
+        }
+
+        this.currentPlayer = original; //Restore original turn state
+        return legalNodes;
+    }
+
+    public List<Node> getLegalCityMoves(Agent agent) {
+        List<Node> legalNodes = new ArrayList<>();
+        //Save state to ensure we don't accidentally skip a human's turn
+        Trader originalPlayer = this.currentPlayer;
+        this.currentPlayer = agent;
+
+        for (Node n : board.getAllNodes()) {
+            if (n != null && this.canBuildCity(n)) {
+                legalNodes.add(n);
+            }
+        }
+
+        this.currentPlayer = originalPlayer; //Restore original turn state
+        return legalNodes;
+    }
+
 
     private Location roadEdgeInput(Scanner s){ //CH
         Edge edge = null;

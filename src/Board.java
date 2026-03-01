@@ -48,7 +48,23 @@ public class Board{
 
 	}
 
-	public HexTile[] getResourceProdTile(int token){ //getting the list of hextiles that has that corresponding token number
+    public List<Node> getAllNodes() {
+        List<Node> allNodes = new ArrayList<>();
+        for (Location loc : nodes) {
+            allNodes.add((Node) loc);
+        }
+        return allNodes;
+    }
+
+    public List<Edge> getAllEdges() {
+        List<Edge> allEdges = new ArrayList<>();
+        for (Location loc : edges) {
+            allEdges.add((Edge) loc);
+        }
+        return allEdges;
+    }
+
+    public HexTile[] getResourceProdTile(int token){ //getting the list of hextiles that has that corresponding token number
         HexTile[] producingTiles = {null, null};
         int i = 0;
         for (HexTile currTile: tiles){

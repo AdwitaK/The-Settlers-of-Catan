@@ -519,7 +519,7 @@ public class Game{
             }
         }
         // Pick one randomly from all valid nodes that we have added
-        return validNodes.get(new java.util.Random().nextInt(validNodes.size()));
+        return validNodes.get(random.nextInt(validNodes.size()));
     }
 
     private Edge findRandomValidRoad(Node settlement) {
@@ -595,7 +595,7 @@ public class Game{
             Agent player = (Agent) agent;
             int agentCardCount = player.getTotalCardCount();
             if (agentCardCount > 7){
-                List<Card> discardCards = player.discardHalfOfHand();
+                List<Card> discardCards = player.discardHalfOfHand(random);
                 for (Card discardCard : discardCards)
                     bank.addCard(discardCard);
 
@@ -638,7 +638,7 @@ public class Game{
             int randomQualifyingAgent = random.nextInt(qualifyingAgents.size()); //number between [0 - size of the num of qualifying agents]
             Agent victim = qualifyingAgents.get(randomQualifyingAgent);
             //steal random card from victim
-            Card stolenCard = victim.removeRandomCard();
+            Card stolenCard = victim.removeRandomCard(random);
             if (stolenCard != null){
                 currentPlayer.addCard(stolenCard);
                 printMessage(": steals a card from" + victim.getId());

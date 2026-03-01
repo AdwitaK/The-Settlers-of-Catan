@@ -47,10 +47,9 @@ public abstract class Trader{
         return null; //No matching resource card found
     }//end of removeCard
 
-    public Card removeRandomCard(){//CH2
+    public Card removeRandomCard(Random random){//CH2
         if (!resourceHand.isEmpty()){
-            Random rand = new Random();
-            int randomCardIndex = rand.nextInt(getTotalCardCount());
+            int randomCardIndex = random.nextInt(getTotalCardCount());
             Card randomCard = resourceHand.remove(randomCardIndex);
 
             ResourceType type = getTypeFromCard(randomCard);

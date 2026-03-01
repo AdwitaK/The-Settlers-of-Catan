@@ -254,8 +254,18 @@ public class Game{
         }
     }
 
-    private boolean resourcePayement(int toBuild){ //CH - change to boolean return
+    private boolean resourcePayement(int toBuild) {
+        //Cast the currentPlayer to an Agent
+        Agent player = (Agent) currentPlayer;
 
+        //Delegate the "Expert" check to the Agent class
+        //This uses the new method in Agent class
+        if (!player.canAfford(toBuild)) {
+            return false; //Stop here if they don't have enough cards
+        }
+
+        //Since we know they can afford it, we perform the actual transaction
+        //Define the recipes locally for the removal process
         ResourceType[][] materials = {
                 {ResourceType.BRICK, ResourceType.LUMBER}, //Road
                 {ResourceType.BRICK, ResourceType.LUMBER, ResourceType.GRAIN, ResourceType.WOOL}, //Settlement
@@ -264,26 +274,17 @@ public class Game{
 
         ResourceType[] recipe = materials[toBuild];
 
-        int[] original = currentPlayer.getResourceCount(); //gets player's array
-        int[] temp = new int[original.length];
-        //copy count over
-        System.arraycopy(original, 0, temp, 0, original.length);
-
-        for (ResourceType type : recipe){
-            int index = type.getIndex();
-            temp[index]--;
-
-            if (temp[index] < 0) {
-                return false;  //not enough resources
-            }
-        }//end of for each
-
+        //Remove cards from player and give to bank
         for (ResourceType type : recipe) {
-            Card transitionCard = currentPlayer.removeCard(type);
-            bank.addCard(transitionCard);
+            Card transitionCard = player.removeCard(type);
+            if (transitionCard != null) {
+                bank.addCard(transitionCard);
+            }
         }
-        return true;
-    }//end of build
+        return true; //Payment successful
+    }
+
+
     private void refundResources(int toBuild) {
         ResourceType[][] materials = {
                 {ResourceType.BRICK, ResourceType.LUMBER},

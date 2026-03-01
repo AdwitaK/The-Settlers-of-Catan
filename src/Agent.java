@@ -78,7 +78,39 @@ public abstract class Agent extends Trader{
 		this.victoryPoints = total;
 		return victoryPoints;
 	}
-	
+
+	public boolean canAfford(int toBuild) {
+		// 0: Road, 1: Settlement, 2: City
+		ResourceType[][] costs = {
+				{ResourceType.BRICK, ResourceType.LUMBER},
+				{ResourceType.BRICK, ResourceType.LUMBER, ResourceType.GRAIN, ResourceType.WOOL},
+				{ResourceType.GRAIN, ResourceType.GRAIN, ResourceType.ORE, ResourceType.ORE, ResourceType.ORE}
+		};
+
+		// Bounds check to prevent crashes
+		if (toBuild < 0 || toBuild >= costs.length) return false;
+
+		ResourceType[] recipe = costs[toBuild];
+
+		// We use getResourceCount() which returns the int[] array
+		int[] original = this.getResourceCount();
+		int[] temp = new int[original.length];
+
+		// Copy current counts to a temp array so we don't accidentally deduct them
+		System.arraycopy(original, 0, temp, 0, original.length);
+
+		for (ResourceType type : recipe) {
+			int index = type.getIndex();
+			temp[index]--;
+
+			if (temp[index] < 0) {
+				return false; // Not enough of this resource
+			}
+		}
+		return true; // Agent has everything required
+	}
+
+
 	public int getVictoryPoints(){
 		return calculateVictoryPoints(); //calls the helper method above to get the victoryPoints
 	}
@@ -97,5 +129,6 @@ public abstract class Agent extends Trader{
 
 	//Methods to be overriden in HumanAgent and RandomAgent
 	public abstract void takeTurn(Game game, Scanner scanner);
+
 
 }

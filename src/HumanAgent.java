@@ -5,45 +5,43 @@ public class HumanAgent extends Agent{
         super(id);
     }
 
+
     @Override
-    public void takeTurn(Game game, Scanner scanner){
+    public void takeTurn(Game game, Scanner scanner) {
         boolean rolled = false;
 
         while (true) {
-            String input = scanner.nextLine();
+            //Read human input
+            String input = scanner.nextLine().trim();
 
-            if (input.equalsIgnoreCase("roll")) {
+            //Step forward and End turn functionality
+            if (input.equalsIgnoreCase("go")) {
                 if (!rolled) {
-                    game.processCommand(input);
+                    game.printMessage("Must roll first.");
+                    continue;
+                }
+                game.printMessage("Decides to proceed, with no more actions.");
+                break; //Exit the loop to end the turn
+            }
+
+            //Logic Rule: Can't do anything (except list) before rolling
+            if (!rolled && !input.equalsIgnoreCase("roll") && !input.equalsIgnoreCase("list")) {
+                game.printMessage("Must roll first.");
+                continue;
+            }
+
+            //Delegate to the Regex Parser
+            boolean success = game.processCommand(input);
+
+            //Update the local turn state based on the parser's success
+            if (success) {
+                if (input.equalsIgnoreCase("roll")) {
                     rolled = true;
-                } else {
-                    game.printMessage("Already rolled.");
                 }
-            }
-            else if (input.startsWith("build")) {
-                if (!rolled) {
-                    game.printMessage("Must roll first.");
-                } else {
-                    game.processCommand(input);
-                    break; // turn ends after build attempt
-                }
-            }
-            else if (input.equalsIgnoreCase("list")) {
-                game.processCommand(input);
-            }
-            else if (input.equalsIgnoreCase("go")) {
-                if(!rolled){
-                    game.printMessage("Must roll first.");
-                } else{
-                    game.printMessage("Decides to proceed, with no more actions.");
-                    break;
-                }
-            }
-            else {
-                game.printMessage("Invalid command.");
             }
         }
     }
+
 
 
 }

@@ -93,23 +93,21 @@ public class Game{
     //NEW METHODS ADDED FOR ASSIGNMENT 2 BELOW ----- :
 
     //Method for parsing the input, by using REGEX
-    public boolean processCommand(String input) { //return value is not used in program, but should be used for testing
-
+    public boolean processCommand(String input) {
         input = input.trim().toLowerCase();
         Agent player = (Agent) currentPlayer;
-        int playerId = player.getId();
 
         // ---------- ROLL ----------
         if (input.matches("^roll$")) {
             int roll = dice.roll();
-            System.out.println(currentRound + " / " + playerId + ": Rolled a " + roll); //not using printMessage because we have roll variable
+            System.out.println(currentRound + " / " + player.getId() + ": Rolled a " + roll);
 
-            if (roll != 7) produceResource(roll);
-            else{
-                Robber robber = board.getRobber();
+            if (roll != 7) {
+                produceResource(roll);
+            } else {
                 robberPlay();
             }
-            return true; //false ?
+            return true;
         }
 
         // ---------- LIST ----------
@@ -118,38 +116,42 @@ public class Game{
             return true;
         }
 
-        // ---------- GO ----------
-        if (input.matches("^go$")) {
-            return true;
-        }
-
-        // ---------- BUILD ----------
-        Pattern buildPattern = Pattern.compile("^build\\s+(road|settlement|city)\\s+(\\d+)(?:[\\s,]+(\\d+))?$");
+        // ---------- BUILD (Regex Parser) ----------
+        //Matches: build road 1, 2 or build settlement 5 or build city 5
+        // Group 3 now captures the space/comma between the two IDs
+        Pattern buildPattern = Pattern.compile("^build\\s+(road|settlement|city)\\s+(\\d+)(?:(\\s*,\\s*|\\s+)(\\d+))?$");
         Matcher matcher = buildPattern.matcher(input);
 
         if (matcher.matches()) {
+            String type = matcher.group(1);
+            String first = matcher.group(2);
+            String separator = matcher.group(3); //Captured whitespace/comma
+            String second = matcher.group(4);
 
-            String type = matcher.group(1); //type of build : road, settlement or city
-            String first = matcher.group(2); //1st number, start node for road, or just node ID for settlement and city
-            String second = matcher.group(3); // 2nd number, end node for road, null for settlement and city
-
-            return handleBuild(type, first, second);
+            return handleBuild(type, first, separator, second);
         }
 
+        //The command didn't match anything
         printMessage("Invalid command.");
         return false;
     }
 
 
 
+
     //Method for calling the right build methods accordingly, depending on the input
     //Only being called by processCommand method above
-    private boolean handleBuild(String type, String first, String second) {
+    private boolean handleBuild(String type, String first, String separator, String second) {
         Agent player = (Agent) currentPlayer;
 
         if (type.equals("road")) {
             if (second == null) {
                 printMessage("Road requires two node IDs.");
+                return false;
+            }
+
+            if (separator == null || !separator.contains(",")) {
+                printMessage("Invalid format. Road requires a comma: build road node1, node2");
                 return false;
             }
 

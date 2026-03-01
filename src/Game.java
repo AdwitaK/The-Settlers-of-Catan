@@ -18,12 +18,14 @@ public class Game{
 
     private Dice dice;
 
+    private Random random;
+
     //CH - add CurentPlayer
     private Trader currentPlayer;
 
     public Game(int rounds, int numPlayers){//CH - add numPlayers
         this.maxRounds = rounds;
-
+        this.random = new Random();
         if (numPlayers < 3 || numPlayers > 4) numPlayers = 4; //defaulting to 4 players.
         agents = new Agent[numPlayers];
 
@@ -534,7 +536,7 @@ public class Game{
             }
         }
         // Pick one randomly from all valid edges that we have added
-        return validEdges.get(new java.util.Random().nextInt(validEdges.size()));
+        return validEdges.get(random.nextInt(validEdges.size()));
     }
 
 
@@ -586,7 +588,6 @@ public class Game{
     }//end of noAdjacentSettlements()
 
     private void robberPlay(){
-        Random rand = new Random();
         Robber robber = board.getRobber();
 
         //Discard Phase
@@ -603,12 +604,11 @@ public class Game{
                 }
             }
         }
-
         //Robber Move Phase
         List<HexTile> tiles = board.getTiles();
         HexTile targetTile;
         do {
-            int randomTileID = rand.nextInt(tiles.size());
+            int randomTileID = random.nextInt(tiles.size());
             targetTile = tiles.get(randomTileID);
         } while (!robber.moveRobber(targetTile)); //the loops runs again if the random id was the same as the old location of the robber
 
@@ -635,16 +635,18 @@ public class Game{
         }//end of for
 
         if (!qualifyingAgents.isEmpty()) {
-            int randomQualifyingAgent = rand.nextInt(qualifyingAgents.size()); //number between [0 - size of the num of qualifying agents]
+            int randomQualifyingAgent = random.nextInt(qualifyingAgents.size()); //number between [0 - size of the num of qualifying agents]
             Agent victim = qualifyingAgents.get(randomQualifyingAgent);
             //steal random card from victim
             Card stolenCard = victim.removeRandomCard();
             if (stolenCard != null){
                 currentPlayer.addCard(stolenCard);
-                System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": steals a card from" + victim.getId());
+                printMessage(": steals a card from" + victim.getId());
+                //System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": steals a card from" + victim.getId());
             }
             else {
-                System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + victim.getId() + " has no cards to steal");
+                printMessage(victim.getId() + " has no cards to steal");
+                //System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + victim.getId() + " has no cards to steal");
             }
         }//end of if
     }//end of robberPlay()

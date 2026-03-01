@@ -4,6 +4,8 @@
 
 /************************************************************/
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -91,9 +93,21 @@ public abstract class Agent extends Trader{
         return id;
     }
 
+
     public Infrastructure[] getInfrastructure(){//CH
         return infrastructure;
     }
+
+    public List<Card> discardHalfOfHand(){//CH2
+        List<Card> discardedCards = new ArrayList<>();
+        int discardCount = getTotalCardCount() / 2;
+
+        for (int i = 0; i < discardCount; i++){
+            discardedCards.add(removeRandomCard());
+        }
+        return discardedCards;
+    }
+
 
 	//Methods to be overriden in HumanAgent and RandomAgent
 	public abstract boolean yesNoMove(Scanner scanner);

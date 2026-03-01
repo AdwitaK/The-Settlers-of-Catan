@@ -47,6 +47,20 @@ public abstract class Trader{
         return null; //No matching resource card found
     }//end of removeCard
 
+    public Card removeRandomCard(){//CH2
+        if (!resourceHand.isEmpty()){
+            Random rand = new Random();
+            int randomCardIndex = rand.nextInt(getTotalCardCount());
+            Card randomCard = resourceHand.remove(randomCardIndex);
+
+            ResourceType type = getTypeFromCard(randomCard);
+            resourceCount[type.getIndex()]--;
+
+            return randomCard;
+        }
+        return null; //player has no resource cards left
+    }//end of removeCard
+
     private ResourceType getTypeFromCard(Card c){
         return ResourceType.valueOf(c.getCardType());
     }
@@ -71,6 +85,9 @@ public abstract class Trader{
         return sb.toString();
     }
 
+    public int getTotalCardCount(){//CH2
+        return resourceHand.size();
+    }
 }//end of Trader
 
 

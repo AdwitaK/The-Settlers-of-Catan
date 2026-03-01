@@ -124,7 +124,7 @@ public class Game{
         }
 
         // ---------- BUILD ----------
-        Pattern buildPattern = Pattern.compile("^build\\s+(road|settlement|city)\\s+(\\d+)(?:\\s+(\\d+))?$");
+        Pattern buildPattern = Pattern.compile("^build\\s+(road|settlement|city)\\s+(\\d+)(?:[\\s,]+(\\d+))?$");
         Matcher matcher = buildPattern.matcher(input);
 
         if (matcher.matches()) {

@@ -13,13 +13,19 @@ public class HumanAgent extends Agent{
         while (true) {
             String input = scanner.nextLine().trim();
 
+            //Capture the result of the command
+            boolean success = false;
+
             if (input.equalsIgnoreCase("roll")) {
                 if (rolled) {
                     game.printMessage("Already rolled. You cannot roll again this turn.");
-                    continue; // Skip the rest and ask for input again
+                    continue;
                 }
-                game.processCommand(input);
-                rolled = true;
+                success = game.processCommand(input);
+                if (success) {
+                    rolled = true;
+                    game.printMessage("Roll accepted. You may now build or type 'go' to end turn.");
+                }
             }
             else if (input.equalsIgnoreCase("go")) {
                 if (!rolled) {
@@ -29,15 +35,20 @@ public class HumanAgent extends Agent{
                 break; //Turn ends
             }
             else {
-                //For list, build, etc.
                 if (!rolled && !input.equalsIgnoreCase("list")) {
                     game.printMessage("Must roll first.");
                 } else {
-                    game.processCommand(input);
+                    success = game.processCommand(input);
+
+                    //Give feedback if a build was successful
+                    if (success && input.startsWith("build")) {
+                        game.printMessage("Construction complete! Anything else? (or type 'go')");
+                    }
                 }
             }
         }
     }
+
 
 
 

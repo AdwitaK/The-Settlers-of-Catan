@@ -121,24 +121,37 @@ public class Game{
         }
 
         // ---------- BUILD (Regex Parser) ----------
-        //Matches: build road 1, 2 or build settlement 5 or build city 5
-        // Group 3 now captures the space/comma between the two IDs
         Pattern buildPattern = Pattern.compile("^build\\s+(road|settlement|city)\\s+(\\d+)(?:(\\s*,\\s*|\\s+)(\\d+))?$");
         Matcher matcher = buildPattern.matcher(input);
 
         if (matcher.matches()) {
             String type = matcher.group(1);
             String first = matcher.group(2);
-            String separator = matcher.group(3); //Captured whitespace/comma
+            String separator = matcher.group(3);
             String second = matcher.group(4);
 
-            return handleBuild(type, first, separator, second);
+            //Capture the success of the build action
+            boolean success = handleBuild(type, first, separator, second);
+
+            //Visibility: If the build worked, tell the console exactly what happened
+            if (success) {
+                if (type.equals("road")) {
+                    printMessage("Built a road connecting node " + first + " and " + second);
+                } else if (type.equals("settlement")) {
+                    printMessage("Built a settlement on node " + first);
+                } else if (type.equals("city")) {
+                    printMessage("Upgraded settlement to city on node " + first);
+                }
+            }
+
+            return success; //Return the result so HumanAgent/RandomAgent knows if it worked
         }
 
         //The command didn't match anything
         printMessage("Invalid command.");
         return false;
     }
+
 
 
 
@@ -675,7 +688,7 @@ public class Game{
         } while (!robber.moveRobber(targetTile)); //the loops runs again if the random id was the same as the old location of the robber
 
         //System.out.println(currentRound + " / " + ((Agent) currentPlayer).getId() + ": moved the robber to tile " + targetTile.getlandTileID());
-        printMessage(": moved the robber to tile " + targetTile.getlandTileID());
+        printMessage("moved the robber to tile " + targetTile.getlandTileID());
 
         //Steal Phase
         Location[] tileNodes = targetTile.getNodes();
@@ -711,7 +724,7 @@ public class Game{
             Card stolenCard = victim.removeRandomCard(random);
             if (stolenCard != null){
                 currentPlayer.addCard(stolenCard);
-                printMessage(": steals a card from" + victim.getId());
+                printMessage("steals a card from " + victim.getId());
                 //System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": steals a card from" + victim.getId());
             }
             else {

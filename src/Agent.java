@@ -45,17 +45,37 @@ public abstract class Agent extends Trader{
 		roadsLeft--;
 	}
 
-	public void buildCity(Location location){
-		if (citiesLeft <= 0){
-			throw new IllegalStateException("There are no cities left to build. Sorry!");
+	public void buildCity(Location location) {
+		if (citiesLeft <= 0) {
+			throw new IllegalStateException("There are no cities left to build.");
 		}
 
+		//Create the city object
 		City city = new City(this);
-		city.build(location);
 
-		infrastructure[infraCount++] = city;
+		//Instead of just adding it to the end of the array,
+		//we find the settlement at this location and replace it.
+		boolean replaced = false;
+		for (int i = 0; i < infraCount; i++) {
+			//If we find the settlement belonging to this player at this location
+			if (infrastructure[i] instanceof Settlement && infrastructure[i].getLocation().equals(location)) {
+				infrastructure[i] = city; //Swap it in the array
+				replaced = true;
+				break;
+			}
+		}
+
+		//Strict Rule Check: If we didn't find a settlement to replace, this build would be illegal
+		if (!replaced) {
+			throw new IllegalStateException("Cannot build a city: No settlement exists at this location.");
+		}
+
+		//Set the location and update counts
+		city.setLocation(location);
 		citiesLeft--;
+		settlementsLeft++; //Give the settlement piece back to the player's supply
 	}
+
 
 	public void buildSettlement(Location location){
 		if (settlementsLeft <= 0){
@@ -67,17 +87,17 @@ public abstract class Agent extends Trader{
 
 		infrastructure[infraCount++] = settlement;
 		settlementsLeft--;
-		this.victoryPoints--; //a settlement gives 1 VP and a city gives 2 VP, but after the settlement is upgraded 
+		//this.victoryPoints--; //a settlement gives 1 VP and a city gives 2 VP, but after the settlement is upgraded
 							  // to a city, it looses the 1 VP from the old settlement. Or we can change this in City class
 		
 	}
 
-	private int calculateVictoryPoints(){
+	private int calculateVictoryPoints() {
 		int total = 0;
-		for (int i=0; i< infraCount; i++){
+		for (int i = 0; i < infraCount; i++) {
+			// This calls Settlement.getVictoryPoints (1) or City.getVictoryPoints (2)
 			total += infrastructure[i].getVictoryPoints();
 		}
-
 		this.victoryPoints = total;
 		return victoryPoints;
 	}
@@ -140,6 +160,16 @@ public abstract class Agent extends Trader{
         }
         return discardedCards;
     }
+
+
+	//For City class
+	//Overwrite the Settlement at that specific spot in the array
+	//This effectively deletes the Settlement from the game state
+	public void replaceInfrastructure(int index, Infrastructure newInfra) {
+		if (index >= 0 && index < infraCount) {
+			this.infrastructure[index] = newInfra;
+		}
+	}
 
 
 	//Methods to be overriden in HumanAgent and RandomAgent

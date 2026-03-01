@@ -360,53 +360,53 @@ public class Game{
     }
 
 
-    private Location roadEdgeInput(Scanner s){ //CH
+    private Location roadEdgeInput(Scanner s) {
         Edge edge = null;
 
-        while (edge == null){
-            //System.out.print("Enter start node ID: ");
-
+        while (edge == null) {
+            //Prompt for the first node before reading, to make it easy to understand what is happening
+            System.out.print(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Enter start node ID: ");
             String aStr = s.nextLine();
             int a = Integer.parseInt(aStr.trim());
-            System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Selects start node (#" + a + ") of edge");
-            //int a = s.nextInt();
-            //s.nextLine();
 
-            //System.out.print("Enter end node ID: ");
+            //Prompt for the second node before reading, for the same reason as above
+            System.out.print(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Enter end node ID: ");
             String bStr = s.nextLine();
             int b = Integer.parseInt(bStr.trim());
-            System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Selects end node (#" + b + ") of edge");
-            //int b = s.nextLine();
-            //s.nextLine();
 
+            //Attempt to find the edge
             edge = board.getEdgeByIDNodes(a, b);
 
-            if (edge == null) System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Invalid node IDs. Try Again");
-                //System.out.println("Invalid node IDs. Please try again."); // if edge is still null after method, the search failed
+            if (edge == null) {
+                System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Invalid node IDs (No edge exists between #" + a + " and #" + b + "). Try Again");
+            } else {
+                //Confirm the selection once valid
+                System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Selects edge (#" + a + ", #" + b + ")");
+            }
         }
         return edge;
     }
-    private Location buildingNodeInput(Scanner s){//CH
-        Node node = null;
 
-        while (node == null){
-            //System.out.print("Enter node ID: ");
-            //int id = s.nextInt();
+    private Location buildingNodeInput(Scanner s) {
+        Node node = null;
+        while (node == null) {
+            //Prompt before reading input, to make it easy to understand what is happening
+            System.out.print(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Enter node ID: ");
+
             String idStr = s.nextLine();
             int id = Integer.parseInt(idStr.trim());
-            System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Selects node (#" + idStr + ")");
-            //s.nextLine();
-            //s.nextLine();
 
             node = board.getIDNode(id);
 
-            if (node == null){// if node is still null after method, the search failed
+            if (node == null) {
                 System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Invalid node ID. Try Again");
-                //System.out.println("Invalid node ID. Please try again.");
             }
         }
+        //Final confirmation message
+        System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Selects node (#" + node.getId() + ")");
         return node;
     }
+
 
     private boolean canBuildRoad(Edge edge){//CH
         Agent player = (Agent) currentPlayer; //type casting to use Agent methods, not just Trader
@@ -536,7 +536,7 @@ public class Game{
     }//end of initialSetup()
 
     //Created this helper method for initialSetup method, to avoid duplicate code for forward and reverse order
-    private void executeSetupTurn(Trader agent, Scanner scanner, String phase){
+    private void executeSetupTurn(Trader agent, Scanner scanner, String phase) {
         currentPlayer = agent;
         Agent a = (Agent) agent;
         System.out.println(currentRound + " / " + a.getId() + ": Selecting " + phase + " Settlement and Road");
@@ -544,22 +544,27 @@ public class Game{
         Node settlementSpot = null;
         Edge roadSpot = null;
 
-        if (a instanceof HumanAgent){
+        if (a instanceof HumanAgent) {
             settlementSpot = setupSettlementInput(scanner);
             roadSpot = setupRoadInput(scanner, settlementSpot);
-        }
-        else if (agent instanceof RandomAgent){
+        } else if (agent instanceof RandomAgent) {
             settlementSpot = findRandomValidSettlement();
             roadSpot = findRandomValidRoad(settlementSpot);
+
+            //Adding these lines for visibility:
+            System.out.println(currentRound + " / " + a.getId() + ": Computer selects node (#" + settlementSpot.getId() + ")");
+            System.out.println(currentRound + " / " + a.getId() + ": Computer selects edge (#" + roadSpot.getStart() + ", #" + roadSpot.getEnd() + ")");
         }
+
         a.buildSettlement(settlementSpot);
         a.buildRoad(roadSpot);
         System.out.println(currentRound + " / " + a.getId() + ": Placed " + phase + " Infrastructure");
 
-        if (phase.equals("Secondary") && settlementSpot != null){
+        if (phase.equals("Secondary") && settlementSpot != null) {
             giveResourceInitialSetup(settlementSpot, agent);
         }
     }
+
 
     private Node findRandomValidSettlement() {
         List<Node> validNodes = new ArrayList<>();

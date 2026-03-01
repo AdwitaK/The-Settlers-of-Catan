@@ -526,7 +526,6 @@ public class Game{
         //Forward order
         for (Trader agent : agents){
             executeSetupTurn(agent, scanner, "Initial");
-            System.out.println();
         }//end of forward turn order of players
         System.out.println();
         //Reverse Order

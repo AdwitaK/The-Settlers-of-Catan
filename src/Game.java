@@ -94,6 +94,10 @@ public class Game{
 
     //Method for parsing the input, by using REGEX
     public boolean processCommand(String input) {
+        //Safety check: ignore empty inputs so they don't trigger "Invalid command"
+        if (input == null || input.trim().isEmpty()) {
+            return false;
+        }
         input = input.trim().toLowerCase();
         Agent player = (Agent) currentPlayer;
 
@@ -531,6 +535,7 @@ public class Game{
         //Reverse Order
         for (int i = agents.length - 1; i >= 0; i--){
             executeSetupTurn(agents[i], scanner, "Secondary");
+            System.out.println();
         }//end of backwards turn order of players
     }//end of initialSetup()
 

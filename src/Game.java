@@ -167,7 +167,7 @@ public class Game{
                 return false;
             }
 
-            if (separator == null || !separator.contains(",")) {
+            if (separator == null || !separator.contains(",")) { //checks if a , is b/w the 2 node ids
                 printMessage("Invalid format. Road requires a comma: build road node1, node2");
                 return false;
             }
@@ -181,12 +181,21 @@ public class Game{
                 return false;
             }
 
-            if (!resourcePayement(0)) {
+            if (!player.canAfford(0)) {
                 printMessage("Insufficient resources.");
+                return false; //Stop here if they don't have enough cards
+            }
+
+            try{
+                player.buildRoad(edge);
+            }
+            catch(Exception e){
+                System.out.println(e.getMessage());
                 return false;
             }
 
-            player.buildRoad(edge);
+            resourcePayement(0);
+
             return true;
         }
 
@@ -199,12 +208,21 @@ public class Game{
                 return false;
             }
 
-            if (!resourcePayement(1)) {
+            if (!player.canAfford(1)) {
                 printMessage("Insufficient resources.");
+                return false; //Stop here if they don't have enough cards
+            }
+
+            try{
+                player.buildSettlement(node);
+            }
+            catch(Exception e){
+                e.getMessage();
                 return false;
             }
 
-            player.buildSettlement(node);
+            resourcePayement(1);
+
             return true;
         }
 
@@ -216,13 +234,21 @@ public class Game{
                 printMessage("Illegal city placement.");
                 return false;
             }
-
-            if (!resourcePayement(2)) {
+            if (!player.canAfford(2)) {
                 printMessage("Insufficient resources.");
+                return false; //Stop here if they don't have enough cards
+            }
+
+            try{
+                player.buildCity(node);
+            }
+            catch(Exception e){
+                e.getMessage();
                 return false;
             }
 
-            player.buildCity(node);
+            resourcePayement(2);
+
             return true;
         }
 

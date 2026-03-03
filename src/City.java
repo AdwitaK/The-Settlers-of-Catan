@@ -13,18 +13,13 @@ public class City extends Infrastructure{
 
     @Override
     public void build(Location location) {
-        if (location instanceof Edge){
-            throw new IllegalStateException("This is an invalid location for the city.");
+        if (!(location instanceof Node)) {
+            throw new IllegalStateException("A city must be placed on a Node.");
         }
 
-        for (int i=0; i< getOwner().getInfraCount(); i++){
-            Infrastructure infra = getOwner().getInfrastructure()[i]; //local variable to prevent duplication
-            if(infra.getLocation() instanceof Node && infra instanceof City){
-                throw new IllegalStateException("This location is already occupied by another city.");
-            }
-        }
-
+        //Update the location
         super.setLocation(location);
-        location.setOccupied(); //allowed when there is nothing or a settlement, because settlement upgrades into a city
+
     }
+
 }

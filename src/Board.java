@@ -12,6 +12,7 @@ public class Board{
 	private List<HexTile> tiles;
 	private List<Location> nodes;
 	private List<Location> edges;
+    private Robber robber;
 
 	public Board(){
 		tiles = new ArrayList<>();
@@ -37,16 +38,37 @@ public class Board{
 				edgesToAdd[j] = edges.get(MapSkeleton.tileEdges[tileID][j]);
 			}
 
-			tiles.add(new HexTile(MapLayout.tileResource[tileID], tileID, MapLayout.tokens[tileID], nodesToAdd, edgesToAdd));
+            HexTile tileToAdd = new HexTile(MapLayout.tileResource[tileID], tileID, MapLayout.tokens[tileID], nodesToAdd, edgesToAdd);
+            if (tileID == 16){ //landID of the desert tile
+                robber = new Robber(tileToAdd);
+            }
+            tiles.add(tileToAdd);
+            //tiles.add(new HexTile(MapLayout.tileResource[tileID], tileID, MapLayout.tokens[tileID], nodesToAdd, edgesToAdd));
 		}
 
 	}
 
-	public HexTile[] getResourceProdTile(int token){ //getting the list of hextiles that has that corresponding token number
+    public List<Node> getAllNodes() {
+        List<Node> allNodes = new ArrayList<>();
+        for (Location loc : nodes) {
+            allNodes.add((Node) loc);
+        }
+        return allNodes;
+    }
+
+    public List<Edge> getAllEdges() {
+        List<Edge> allEdges = new ArrayList<>();
+        for (Location loc : edges) {
+            allEdges.add((Edge) loc);
+        }
+        return allEdges;
+    }
+
+    public HexTile[] getResourceProdTile(int token){ //getting the list of hextiles that has that corresponding token number
         HexTile[] producingTiles = {null, null};
         int i = 0;
         for (HexTile currTile: tiles){
-            if (currTile.getToken() == token){
+            if (currTile.getToken() == token && !currTile.getRobberPlaced()){
 				producingTiles[i] = currTile;
 				i++;
             }
@@ -78,4 +100,8 @@ public class Board{
 	public List<HexTile> getTiles(){
 		return tiles;
 	}
+
+    public Robber getRobber(){
+        return robber;
+    }
 }

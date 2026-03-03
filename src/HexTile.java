@@ -13,6 +13,8 @@ public class HexTile{
     private Location[] nodes;
     private Location[] edges;
 
+    private boolean robberPlaced;
+
     public HexTile(ResourceType resource, int landTileID, int token, Location[] nodes, Location[] edges){
         this.resourcetype = resource;
         this.landTileID = landTileID;
@@ -43,5 +45,13 @@ public class HexTile{
 
     public int getToken(){
         return token;
+    }
+
+    public void setRobber(boolean b){
+        this.robberPlaced = b;
+    }
+
+    public boolean getRobberPlaced(){
+        return robberPlaced;
     }
 }//end of HexTile class

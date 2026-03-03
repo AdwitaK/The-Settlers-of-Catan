@@ -3,10 +3,16 @@
 // --------------------------------------------------------
 
 /************************************************************/
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.Scanner;
+
 /**
  * This class represents an agent, or a player in the simulated catan game. 
  */
-public class Agent extends Trader{
+public abstract class Agent extends Trader{
 
 	private int id;
 	private int victoryPoints;
@@ -39,17 +45,37 @@ public class Agent extends Trader{
 		roadsLeft--;
 	}
 
-	public void buildCity(Location location){
-		if (citiesLeft <= 0){
-			throw new IllegalStateException("There are no cities left to build. Sorry!");
+	public void buildCity(Location location) {
+		if (citiesLeft <= 0) {
+			throw new IllegalStateException("There are no cities left to build.");
 		}
 
+		//Create the city object
 		City city = new City(this);
-		city.build(location);
 
-		infrastructure[infraCount++] = city;
+		//Instead of just adding it to the end of the array,
+		//we find the settlement at this location and replace it.
+		boolean replaced = false;
+		for (int i = 0; i < infraCount; i++) {
+			//If we find the settlement belonging to this player at this location
+			if (infrastructure[i] instanceof Settlement && infrastructure[i].getLocation().equals(location)) {
+				infrastructure[i] = city; //Swap it in the array
+				replaced = true;
+				break;
+			}
+		}
+
+		//Strict Rule Check: If we didn't find a settlement to replace, this build would be illegal
+		if (!replaced) {
+			throw new IllegalStateException("Cannot build a city: No settlement exists at this location.");
+		}
+
+		//Set the location and update counts
+		city.setLocation(location);
 		citiesLeft--;
+		settlementsLeft++; //Give the settlement piece back to the player's supply
 	}
+
 
 	public void buildSettlement(Location location){
 		if (settlementsLeft <= 0){
@@ -61,21 +87,53 @@ public class Agent extends Trader{
 
 		infrastructure[infraCount++] = settlement;
 		settlementsLeft--;
-		this.victoryPoints--; //a settlement gives 1 VP and a city gives 2 VP, but after the settlement is upgraded 
+		//this.victoryPoints--; //a settlement gives 1 VP and a city gives 2 VP, but after the settlement is upgraded
 							  // to a city, it looses the 1 VP from the old settlement. Or we can change this in City class
 		
 	}
 
-	private int calculateVictoryPoints(){
+	private int calculateVictoryPoints() {
 		int total = 0;
-		for (int i=0; i< infraCount; i++){
+		for (int i = 0; i < infraCount; i++) {
+			// This calls Settlement.getVictoryPoints (1) or City.getVictoryPoints (2)
 			total += infrastructure[i].getVictoryPoints();
 		}
-
 		this.victoryPoints = total;
 		return victoryPoints;
 	}
-	
+
+	public boolean canAfford(int toBuild) {
+		// 0: Road, 1: Settlement, 2: City
+		ResourceType[][] costs = {
+				{ResourceType.BRICK, ResourceType.LUMBER},
+				{ResourceType.BRICK, ResourceType.LUMBER, ResourceType.GRAIN, ResourceType.WOOL},
+				{ResourceType.GRAIN, ResourceType.GRAIN, ResourceType.ORE, ResourceType.ORE, ResourceType.ORE}
+		};
+
+		// Bounds check to prevent crashes
+		if (toBuild < 0 || toBuild >= costs.length) return false;
+
+		ResourceType[] recipe = costs[toBuild];
+
+		// We use getResourceCount() which returns the int[] array
+		int[] original = this.getResourceCount();
+		int[] temp = new int[original.length];
+
+		// Copy current counts to a temp array so we don't accidentally deduct them
+		System.arraycopy(original, 0, temp, 0, original.length);
+
+		for (ResourceType type : recipe) {
+			int index = type.getIndex();
+			temp[index]--;
+
+			if (temp[index] < 0) {
+				return false; // Not enough of this resource
+			}
+		}
+		return true; // Agent has everything required
+	}
+
+
 	public int getVictoryPoints(){
 		return calculateVictoryPoints(); //calls the helper method above to get the victoryPoints
 	}
@@ -88,8 +146,34 @@ public class Agent extends Trader{
         return id;
     }
 
+
     public Infrastructure[] getInfrastructure(){//CH
         return infrastructure;
     }
+
+    public List<Card> discardHalfOfHand(Random random){//CH2
+        List<Card> discardedCards = new ArrayList<>();
+        int discardCount = getTotalCardCount() / 2;
+
+        for (int i = 0; i < discardCount; i++){
+            discardedCards.add(removeRandomCard(random));
+        }
+        return discardedCards;
+    }
+
+
+	//For City class
+	//Overwrite the Settlement at that specific spot in the array
+	//This effectively deletes the Settlement from the game state
+	public void replaceInfrastructure(int index, Infrastructure newInfra) {
+		if (index >= 0 && index < infraCount) {
+			this.infrastructure[index] = newInfra;
+		}
+	}
+
+
+	//Methods to be overriden in HumanAgent and RandomAgent
+	public abstract void takeTurn(Game game, Scanner scanner);
+
 
 }

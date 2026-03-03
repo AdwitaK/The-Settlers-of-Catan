@@ -44,158 +44,49 @@ public class Demonstrator {
     */
 
     public static void main(String[] args) {
-        int maxRounds;
-        int numPlayers = 4; //Standard Catan player count
+        Scanner consoleScanner = new Scanner(System.in);
+        int maxRounds = -1;
+        //Loop until a valid positive integer is entered
+        while (maxRounds <= 0) {
+            System.out.print("Enter maximum rounds to play (positive integer): ");
+            String input = consoleScanner.nextLine().trim();
+            try {
+                maxRounds = Integer.parseInt(input);
+                if (maxRounds <= 0) {
+                    System.out.println("Error: Rounds must be greater than 0.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Error: '" + input + "' is not a valid number. Please try again.");
+            }
+        }
 
-        // Create the game
-        Game game;
-        System.out.println("↳ Starting Simulation\n");
-        // Read user inputs from a file instead of typing
+        int numPlayers = -1;
+        // Loop until 3 or 4 is entered
+        while (numPlayers < 3 || numPlayers > 4) {
+            System.out.print("Enter number of players (3 or 4): ");
+            String input = consoleScanner.nextLine().trim();
+            try {
+                numPlayers = Integer.parseInt(input);
+                if (numPlayers < 3 || numPlayers > 4) {
+                    System.out.println("Error: This game only supports 3 or 4 players.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Error: Please enter the digit 3 or 4.");
+            }
+        }
+
+        System.out.println("\n↳ Initializing Game with " + maxRounds + " rounds and " + numPlayers + " players...");
+
+        Game game = new Game(maxRounds, numPlayers);
+
         try {
-            /*
-             * ------------------------------------
-             * 1. Input-Driven Simulation
-             * ------------------------------------
-             * Instead of interactive console input,
-             * we load all player decisions from demo_input.txt.
-             *
-             * This allows us to:
-             * - Precisely control player actions
-             * - Demonstrate specific success/failure cases
-             * - Ensure consistent grading behaviour
-             */
-
-            Scanner fileScanner = new Scanner(new File("demo_input.txt"));
-
-            /**
-             * ------------------------------------
-             * 2. Turn -> Round Conversion
-             * ------------------------------------
-             * The specification defines simulation length in turns.
-             * However, the Game class internally operates in rounds,
-             * where:
-             * 
-             * 1 round = every player takes exactly one turn
-             *
-             * Therefore: rounds = totalTurns / numberOfPlayers
-             *
-             * Example:
-             * turns: 16
-             * players: 4
-             * -> rounds = 4
-             * 
-             * This ensures correct full-rotation simulation.
-             */
-
-            
-            //Read the first line to get the max rounds
-            String line = fileScanner.nextLine().trim();
-
-            //Split at ':' to get the number
-            String[] parts = line.split(":");
-            maxRounds = (Integer.parseInt(parts[1].trim()))/numPlayers;
-
-            /*
-             * ------------------------------------
-             3. Game Initialization
-             * ------------------------------------
-             *
-             * The Game constructor is responsible for creating:
-             * - The Board
-             * - The Bank (19 resource cards per type)
-             * - AlL Agent players
-             * - The Dice system
-             * 
-             * The Demonstrator does not manipulate internal state.
-             * This preserves encapsulation.
-            */
-
-            game = new Game(maxRounds, numPlayers);
-
-            /*
-             * ------------------------------------
-             * 4. Input Scenario Design Explanation
-             * ------------------------------------
-             * The demo_input.txt file is intentionally structured
-             * to demonstrate specific rule enforcement scenarios.
-             * 
-             * Early in the simulation:
-             * - Multiple "no" inputs are provided.
-             * - This allows players to accumulate resources
-             * through dice production before building.
-             * 
-             * In the final round, the file forces:
-             * Player 1:
-             * - Attempts to build a road.
-             * - Placement is legal.
-             * - Resources are sufficient.
-             * -> Successful build demonstrated.
-             * Player 2:
-             * - Attempts to build a settlement.
-               - Violates adjacent settlement rule.
-               -> Illegal build rejection demonstrated.
-             * Player 3:
-            * - Attempts to build a road.
-            * - Does not have required resources.
-            * -> Resource validation failure demonstrated.
-            * Player 4:
-            * Chooses not to build.
-            * -> Optional action handling demonstrated.
-            
-            * This deterministic sequence demonstrates:
-            - Rule validation logic
-            - Resource deduction
-            - Bank interaction
-            - Resource insufficiency handling
-            - Build rejection without state corruption
-            */
-            
-           /* 
-            * ------------------------------------
-            * 5. Execute Full Simulation Lifecycle
-            * ------------------------------------
-            game.run() performs:
-
-            * PHASE 1 - Initial Setup
-            - Forward order settlement + road placement
-            - Reverse order settlement + road placement
-            - Initial resource allocation
-
-            * PHASE 2 - Main Game Loop
-            * For each round:
-            - Each player rolls dice
-            - Resources are produced
-            - Player chooses whether to build
-            - Victory points are evaluated
-
-            * Termination occurs when:
-            - A player reaches 10 victory points, or
-            - Maximum rounds are reached.
-            */
-
-            //pass this file scanner to the game run method
-            game.run(fileScanner);
-
-            fileScanner.close(); //prevents leaks
+            game.run(consoleScanner);
+        } catch (Exception e) {
+            System.err.println("Fatal Game Error: " + e.getMessage());
+        } finally {
+            consoleScanner.close();
+            System.out.println("\n↳ Simulation Completed");
         }
-        catch (FileNotFoundException e) {
-            System.out.println("Exception: " + e);
-        }
-
-        /*
-        * ------------------------------------
-        * 6. Simulation Completed
-        * ------------------------------------
-        * The console output during execution demonstrates:
-        * - Turn sequencing
-        * - Dice outcomes
-        * - Bank interactions
-        * - Victory point tracking
-        * - Resource production
-        * - Legal and illegal builds
-        */
-
-        System.out.println("↳ Simulation Completed");
     }
 }
 

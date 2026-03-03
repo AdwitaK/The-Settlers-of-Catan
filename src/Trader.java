@@ -47,15 +47,46 @@ public abstract class Trader{
         return null; //No matching resource card found
     }//end of removeCard
 
+    public Card removeRandomCard(Random random){//CH2
+        if (!resourceHand.isEmpty()){
+            int randomCardIndex = random.nextInt(getTotalCardCount());
+            Card randomCard = resourceHand.remove(randomCardIndex);
+
+            ResourceType type = getTypeFromCard(randomCard);
+            resourceCount[type.getIndex()]--;
+
+            return randomCard;
+        }
+        return null; //player has no resource cards left
+    }//end of removeCard
+
     private ResourceType getTypeFromCard(Card c){
         return ResourceType.valueOf(c.getCardType());
     }
-
 
     public int[] getResourceCount(){ //CH - new method
         return resourceCount;
     }
 
+    //Displaying the resourceHand of a Trader
+    public String getHandString() {
+        if (resourceHand.isEmpty()) return "[Empty]";
+
+        StringBuilder sb = new StringBuilder();
+        ResourceType[] types = ResourceType.values();
+        for (ResourceType type : types) {
+            if (type == ResourceType.DESERT) continue;
+            int count = resourceCount[type.getIndex()];
+            if (count > 0) {
+                sb.append(type).append(": ").append(count).append(" | ");
+            }
+        }
+        return sb.toString();
+    }
+
+    public int getTotalCardCount(){//CH2
+        return resourceHand.size();
+    }
 }//end of Trader
 
 

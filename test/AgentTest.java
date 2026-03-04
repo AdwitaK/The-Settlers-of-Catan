@@ -6,13 +6,13 @@ public class AgentTest {
     @Test
     void checkVPsAtStart(){
         //Might remove later
-        Agent player = new Agent(1);
+        Agent player = new HumanAgent(1);
         assertEquals(0, player.getVictoryPoints());
     }
 
     @Test
     void checkVPsAfterSettlementBuild(){
-        Agent player = new Agent(1);
+        Agent player = new HumanAgent(1);
         Location tileNode = new Node(1);
         player.buildSettlement(tileNode);
         assertEquals(1, player.getVictoryPoints());
@@ -20,15 +20,16 @@ public class AgentTest {
 
     @Test
     void checkVPsAfterCityBuild(){
-        Agent player = new Agent(1);
+        Agent player = new HumanAgent(1);
         Location tileNode = new Node(1);
+        player.buildSettlement(tileNode);
         player.buildCity(tileNode);
         assertEquals(2, player.getVictoryPoints());
     }
 
     @Test
     void justEnoughBuilds(){
-        Agent player = new Agent(1);
+        Agent player = new HumanAgent(1);
         Board board = new Board();
         //Each player only gets 5 settlements
         for(int i = 0; i<4; i++){
@@ -43,7 +44,7 @@ public class AgentTest {
 
     @Test
     void tooManyBuilds(){
-        Agent player = new Agent(1);
+        Agent player = new HumanAgent(1);
         Board board = new Board();
         //Each player only gets 5 settlements, so they cannot build a 6th one
         for(int i = 0; i<5; i++){

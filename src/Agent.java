@@ -20,6 +20,7 @@ public abstract class Agent extends Trader{
 	private int citiesLeft;
 	private int settlementsLeft;
 	private int infraCount;
+	private Colour colour;
 	private Infrastructure[] infrastructure;
 
 
@@ -30,6 +31,7 @@ public abstract class Agent extends Trader{
 		this.settlementsLeft = 5;
 		this.infraCount = 0;
 		this.victoryPoints = 0;
+		this.colour = Colour.getColour(id);
         this.infrastructure = new Infrastructure[24];
 	}
 
@@ -146,7 +148,9 @@ public abstract class Agent extends Trader{
         return id;
     }
 
-
+	public Colour getColour(){
+		return this.colour;
+	}
     public Infrastructure[] getInfrastructure(){//CH
         return infrastructure;
     }

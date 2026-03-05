@@ -22,4 +22,9 @@ public class City extends Infrastructure{
 
     }
 
+    @Override
+    public String getInfraName(){
+        return "CITY";
+    }
+
 }

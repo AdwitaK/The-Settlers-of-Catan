@@ -24,4 +24,9 @@ public class Settlement extends Infrastructure{
         super.setLocation(location);
         location.setOccupied(); //only when there is nothing at that location
     }
+
+    @Override
+    public String getInfraName(){
+        return "SETTLEMENT";
+    }
 }

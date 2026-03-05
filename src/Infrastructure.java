@@ -15,6 +15,7 @@ public abstract class Infrastructure{
         this.victoryPoints = victoryPoints;
         this.owner = owner;
     }
+    public abstract String getInfraName();
 
     public abstract void build(Location location);
     public int getVictoryPoints(){

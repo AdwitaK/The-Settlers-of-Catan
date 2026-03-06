@@ -7,7 +7,7 @@
 /**
  * A type of infrastructure, built on edges of tiles.
  */
-public class Road extends Infrastructure{
+public class Road extends Infrastructure {
 	public Road(Agent owner){
 		super(0, owner); //Road gives 0 VP
 	}

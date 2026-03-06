@@ -6,7 +6,7 @@
 /**
  * A concrete subclass of infrastructure. A type of infrastructure worth 2 VP that can be built by a player.
  */
-public class City extends Infrastructure{
+public class City extends Infrastructure {
     public City(Agent owner){
         super(2, owner); //City gives 2 VP
     }

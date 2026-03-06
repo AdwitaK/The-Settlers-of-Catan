@@ -6,7 +6,7 @@
 /**
  * A type of infrastructure, build on nodes.
  */
-public class Settlement extends Infrastructure{
+public class Settlement extends Infrastructure {
 	public Settlement(Agent owner){
 		super(1, owner); //Settlement gives 1 VP
 	}

@@ -12,7 +12,7 @@ import java.util.Scanner;
 /**
  * This class represents an agent, or a player in the simulated catan game. 
  */
-public abstract class Agent extends Trader{
+public abstract class Agent extends Trader {
 
 	private int id;
 	private int victoryPoints;

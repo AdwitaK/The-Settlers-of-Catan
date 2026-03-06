@@ -1,4 +1,3 @@
-
 /**
  * Date: February 9th, 2026
  * Description: A standard six‑sided die implementation of the Dice interface. This class encapsulates the behavior of a single die that 

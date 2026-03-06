@@ -1,4 +1,3 @@
-
 /**
  * Date: February 9th, 2026
  * Description: A  composite dice implementation that represents multiple Dice objects rolled together. Each die contributes to the 
@@ -8,8 +7,8 @@
  * Additions and implementation by Eileen Sanchez 
  */
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MultiDice implements Dice {
 	/**

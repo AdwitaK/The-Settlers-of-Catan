@@ -6,7 +6,7 @@
 /**
  * A type of location, found at the intersection of three tiles.
  */
-public class Node extends Location{
+public class Node extends Location {
 
 	private int id;
 

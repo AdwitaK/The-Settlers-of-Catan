@@ -6,7 +6,7 @@
  * resource cards in the game not held by players.
  */
 
-public class Bank extends Trader{
+public class Bank extends Trader {
 	public Bank(){
         super();
         //Number of each resource in the Bank

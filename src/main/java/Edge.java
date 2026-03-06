@@ -5,7 +5,7 @@
 /**
  * A class to represent the edges of a tile.
  */
-public class Edge extends Location{
+public class Edge extends Location {
 	private int start;
 	private int end;
 

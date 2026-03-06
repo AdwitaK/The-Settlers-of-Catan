@@ -1,5 +1,3 @@
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 /**
@@ -16,7 +14,7 @@ import java.util.Scanner;
 * - Dice rolling and resource production
 *
 * - Bank interaction
-* - Build validation (legal and illegal builds)
+* - Build validation (legal ande illegal builds)
 * - Resource payment and refund logic
 * - Victory point tracking
 *

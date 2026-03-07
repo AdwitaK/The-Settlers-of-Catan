@@ -4,6 +4,8 @@
 
 /************************************************************/
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -148,8 +150,8 @@ public abstract class Agent extends Trader {
         return id;
     }
 
-	public Colour getColour(){
-		return this.colour;
+	public String getColourName(){
+		return this.colour.name();
 	}
     public Infrastructure[] getInfrastructure(){//CH
         return infrastructure;
@@ -178,6 +180,5 @@ public abstract class Agent extends Trader {
 
 	//Methods to be overriden in HumanAgent and RandomAgent
 	public abstract void takeTurn(Game game, Scanner scanner);
-
 
 }

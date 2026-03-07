@@ -6,3 +6,4 @@
 out/
 target/
 state.json
+scraped_boards/

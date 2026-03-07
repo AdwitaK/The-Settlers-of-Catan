@@ -60,6 +60,6 @@ public class AgentTest {
     @Test
     void playerWithColour(){
         Agent player = new HumanAgent(1);
-        assertEquals(Colour.RED, player.getColour());
+        assertEquals("RED", player.getColourName());
     }
 }

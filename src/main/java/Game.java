@@ -4,6 +4,7 @@
 
 import org.json.JSONWriter;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,6 +27,7 @@ public class Game{
     //CH - add CurentPlayer
     private Trader currentPlayer;
     private JsonWriter writer;
+    private Process visualizer;
 
     @SuppressWarnings("java:S2245")
     public Game(int rounds, int numPlayers){//CH - add numPlayers
@@ -45,7 +47,9 @@ public class Game{
         board = new Board();
         bank = new Bank();
         dice = new MultiDice(2);
+        //writer = new JsonWriter("visualizer/state.json");
         writer = new JsonWriter("state.json");
+        launchVisualizer();
     }//end of Game constructor
 
     public void run(Scanner scanner){
@@ -92,6 +96,7 @@ public class Game{
             }//end of if (win message)
             System.out.println();
         }//end of for loop (max round loop)
+        visualizer.destroy();
     }//end of run()
 
     //NEW METHODS ADDED FOR ASSIGNMENT 2 BELOW ----- :
@@ -760,5 +765,21 @@ public class Game{
 
     private void updateBoard(){
         writer.write(this);
+    }
+
+    private void launchVisualizer(){
+        System.out.println("Debug: launching visualizer");//debug
+        try{
+            //ProcessBuilder processBuilder = new ProcessBuilder("ls");//debug
+            ProcessBuilder processBuilder = new ProcessBuilder("python", "visualizer/light_visualizer.py", "visualizer/base_map.json", "--watch");
+            visualizer = processBuilder.start();
+            processBuilder.inheritIO(); //debug
+            System.out.println("debug: visualizer launched");//debug
+        }
+        catch(IOException e){
+            System.err.println(e.getMessage());
+            System.out.println("debug: process launch failed");//debug
+        }
+
     }
 }//end of Game class

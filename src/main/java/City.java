@@ -3,6 +3,9 @@
 // --------------------------------------------------------
 
 /************************************************************/
+
+import org.json.JSONObject;
+
 /**
  * A concrete subclass of infrastructure. A type of infrastructure worth 2 VP that can be built by a player.
  */
@@ -27,4 +30,21 @@ public class City extends Infrastructure {
         return "CITY";
     }
 
+    @Override
+    public JSONObject toJSON() {
+        // "node" : nodeID, "owner": colour, type: "CITY"
+        JSONObject cityObj = new JSONObject();
+        int nodeID;
+        if (this.getLocation() instanceof Node){
+            nodeID = ((Node)this.getLocation()).getId();
+        }
+        else {
+            return null;
+        }
+        cityObj.put("node", nodeID);
+        cityObj.put("owner", this.getOwner().getColourName());
+        cityObj.put("type", "CITY");
+
+        return cityObj;
+    }
 }

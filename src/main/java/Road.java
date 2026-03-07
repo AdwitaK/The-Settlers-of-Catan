@@ -4,6 +4,9 @@
 
 
 /************************************************************/
+
+import org.json.JSONObject;
+
 /**
  * A type of infrastructure, built on edges of tiles.
  */
@@ -29,5 +32,24 @@ public class Road extends Infrastructure {
     @Override
     public String getInfraName(){
         return "ROAD";
+    }
+
+    @Override
+    public JSONObject toJSON() {
+        // "a" : start, "b": end, "owner": colour
+        JSONObject roadObj = new JSONObject();
+        int start, end;
+        if (this.getLocation() instanceof Edge){
+            start = ((Edge) this.getLocation()).getStart();
+            end = (((Edge) this.getLocation()).getEnd());
+        }
+        else {
+            return null;
+        }
+        roadObj.put("a", start);
+        roadObj.put("b", end);
+        roadObj.put("owner", this.getOwner().getColourName());
+
+        return roadObj;
     }
 }

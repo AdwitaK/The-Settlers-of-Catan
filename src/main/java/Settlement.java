@@ -3,6 +3,9 @@
 // --------------------------------------------------------
 
 /************************************************************/
+
+import org.json.JSONObject;
+
 /**
  * A type of infrastructure, build on nodes.
  */
@@ -28,5 +31,23 @@ public class Settlement extends Infrastructure {
     @Override
     public String getInfraName(){
         return "SETTLEMENT";
+    }
+
+    @Override
+    public JSONObject toJSON() {
+        // "node" : nodeID, "owner": colour, type: "SETTLEMENT"
+        JSONObject settlementObj = new JSONObject();
+        int nodeID;
+        if (this.getLocation() instanceof Node){
+            nodeID = ((Node)this.getLocation()).getId();
+        }
+        else {
+            return null;
+        }
+        settlementObj.put("node", nodeID);
+        settlementObj.put("owner", this.getOwner().getColourName());
+        settlementObj.put("type", "SETTLEMENT");
+
+        return settlementObj;
     }
 }

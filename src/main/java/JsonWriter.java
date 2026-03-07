@@ -11,7 +11,6 @@ public class JsonWriter {
     }
 
     public void write(Game game){
-        System.out.println("debug: updating state now");//
         JSONObject gameState = new JSONObject();
 
         JSONArray roads = new JSONArray();

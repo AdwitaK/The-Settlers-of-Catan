@@ -3,6 +3,9 @@
 // --------------------------------------------------------
 
 /************************************************************/
+
+import org.json.JSONObject;
+
 /**
  * A class to define a template for roads, settlements, and cities
  */
@@ -16,6 +19,7 @@ public abstract class Infrastructure{
         this.owner = owner;
     }
     public abstract String getInfraName();
+    public abstract JSONObject toJSON();
 
     public abstract void build(Location location);
     public int getVictoryPoints(){

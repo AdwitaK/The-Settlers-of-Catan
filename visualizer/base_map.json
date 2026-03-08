@@ -1,25 +1,135 @@
-{
-  "tiles": [
-    { "q":  0, "s":  0, "r":  0, "resource": "WOOD", "number": 10 },
-
-    { "q":  0, "s": -1, "r":  1, "resource": "WHEAT",   "number": 11 },
-    { "q": -1, "s":  0, "r":  1, "resource": "BRICK",    "number": 8 },
-    { "q": -1, "s":  1, "r":  0, "resource": "ORE",   "number": 3 },
-    { "q":  0, "s":  1, "r": -1, "resource": "SHEEP",  "number": 11 },
-    { "q":  1, "s":  0, "r": -1, "resource": "SHEEP",  "number": 5 },
-    { "q":  1, "s": -1, "r":  0, "resource": "SHEEP",  "number": 12 },
-
-    { "q":  0, "s": -2, "r":  2, "resource": "WHEAT",  "number": 3 },
-    { "q": -1, "s": -1, "r":  2, "resource": "ORE",  "number": 6 },
-    { "q": -2, "s":  0, "r":  2, "resource": "WOOD",    "number": 4 },
-    { "q": -2, "s":  1, "r":  1,  "resource": "ORE",  "number": 6 },
-    { "q": -2, "s":  2, "r":  0, "resource": "WHEAT",  "number": 9 },
-    { "q": -1, "s":  2, "r": -1, "resource": "WOOD",  "number": 5 },
-    { "q":  0, "s":  2, "r": -2, "resource": "BRICK",    "number": 9 },
-    { "q":  1, "s":  1, "r": -2, "resource": "BRICK",  "number": 8 },
-    { "q":  2, "s":  0, "r": -2, "resource": "WHEAT",   "number": 4 },
-    { "q":  2, "s": -1, "r": -1, "resource": null,  "number": null },
-    { "q":  2, "s": -2, "r":  0, "resource": "WOOD",  "number": 2 },
-    { "q":  1, "s": -2, "r":  1, "resource": "SHEEP",   "number": 10 }
-  ]
-}
+{"tiles": [
+  {
+    "q": 0,
+    "number": 10,
+    "r": 0,
+    "s": 0,
+    "resource": "WOOD"
+  },
+  {
+    "q": 0,
+    "number": 11,
+    "r": 1,
+    "s": -1,
+    "resource": "WHEAT"
+  },
+  {
+    "q": -1,
+    "number": 8,
+    "r": 1,
+    "s": 0,
+    "resource": "BRICK"
+  },
+  {
+    "q": -1,
+    "number": 3,
+    "r": 0,
+    "s": 1,
+    "resource": "ORE"
+  },
+  {
+    "q": 0,
+    "number": 11,
+    "r": -1,
+    "s": 1,
+    "resource": "SHEEP"
+  },
+  {
+    "q": 1,
+    "number": 5,
+    "r": -1,
+    "s": 0,
+    "resource": "SHEEP"
+  },
+  {
+    "q": 1,
+    "number": 12,
+    "r": 0,
+    "s": -1,
+    "resource": "SHEEP"
+  },
+  {
+    "q": 0,
+    "number": 3,
+    "r": 2,
+    "s": -2,
+    "resource": "WHEAT"
+  },
+  {
+    "q": -1,
+    "number": 6,
+    "r": 2,
+    "s": -1,
+    "resource": "ORE"
+  },
+  {
+    "q": -2,
+    "number": 4,
+    "r": 2,
+    "s": 0,
+    "resource": "WOOD"
+  },
+  {
+    "q": -2,
+    "number": 6,
+    "r": 1,
+    "s": 1,
+    "resource": "ORE"
+  },
+  {
+    "q": -2,
+    "number": 9,
+    "r": 0,
+    "s": 2,
+    "resource": "WHEAT"
+  },
+  {
+    "q": -1,
+    "number": 5,
+    "r": -1,
+    "s": 2,
+    "resource": "WOOD"
+  },
+  {
+    "q": 0,
+    "number": 9,
+    "r": -2,
+    "s": 2,
+    "resource": "BRICK"
+  },
+  {
+    "q": 1,
+    "number": 8,
+    "r": -2,
+    "s": 1,
+    "resource": "BRICK"
+  },
+  {
+    "q": 2,
+    "number": 4,
+    "r": -2,
+    "s": 0,
+    "resource": "WHEAT"
+  },
+  {
+    "q": 2,
+    "number": null,
+    "r": -1,
+    "s": -1,
+    "resource": null
+  },
+  {
+    "q": 2,
+    "number": 2,
+    "r": 0,
+    "s": -2,
+    "resource": "WOOD"
+  },
+  {
+    "q": 1,
+    "number": 10,
+    "r": 1,
+    "s": -2,
+    "resource": "SHEEP"
+  }
+]}

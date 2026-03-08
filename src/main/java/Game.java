@@ -89,7 +89,7 @@ public class Game{
             }//end of if (win message)
             System.out.println();
         }//end of for loop (max round loop)
-        visualizer.destroy();
+        endVisualizer();
     }//end of run()
 
     //NEW METHODS ADDED FOR ASSIGNMENT 2 BELOW ----- :
@@ -770,5 +770,10 @@ public class Game{
             System.err.println(e.getMessage());
         }
 
+    }
+
+    private void endVisualizer(){
+        writer.setBaseMap(); //restore base map to original state for next game
+        visualizer.destroy();
     }
 }//end of Game class

@@ -100,7 +100,7 @@ public class JsonWriter {
             Files.writeString(Path.of(baseMapFile), board.toString(2));
 
             //Update state.json timestamp to trigger new render
-            Files.setLastModifiedTime( Path.of(stateFile), FileTime.fromMillis(System.currentTimeMillis()));
+            //Files.setLastModifiedTime( Path.of(stateFile), FileTime.fromMillis(System.currentTimeMillis()));
 
         }
         catch(IOException e){

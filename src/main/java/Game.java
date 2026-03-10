@@ -198,6 +198,7 @@ public class Game{
 
             resourcePayement(0);
             updateBoard();
+            System.out.println("Updated board (1)");//debug
             return true;
         }
 
@@ -225,6 +226,7 @@ public class Game{
 
             resourcePayement(1);
             updateBoard();
+            System.out.println("Updated board (2)");//debug
             return true;
         }
 
@@ -251,6 +253,7 @@ public class Game{
 
             resourcePayement(2);
             updateBoard();
+            System.out.println("Updated board (3)");//debug
             return true;
         }
 
@@ -601,6 +604,7 @@ public class Game{
         a.buildRoad(roadSpot);
         System.out.println(currentRound + " / " + a.getId() + ": Placed " + phase + " Infrastructure");
         updateBoard();
+        System.out.println("Updated board (4)");//debug
 
         if (phase.equals("Secondary") && settlementSpot != null) {
             giveResourceInitialSetup(settlementSpot, agent);
@@ -763,8 +767,18 @@ public class Game{
 
     private void launchVisualizer(){
         try{
-            ProcessBuilder processBuilder = new ProcessBuilder("python", "visualizer/light_visualizer.py", "visualizer/base_map.json", "--watch");
+            //ProcessBuilder processBuilder = new ProcessBuilder("python", "visualizer/light_visualizer.py", "visualizer/base_map.json", "--watch");
+            //ProcessBuilder processBuilder = new ProcessBuilder(".venv\\Scripts\\python.exe", "light_visualizer.py",  "base_map.json", "--watch");
+            ProcessBuilder processBuilder = new ProcessBuilder(
+                    "visualizer\\.venv\\Scripts\\python.exe",
+                    "visualizer\\light_visualizer.py",
+                    "visualizer\\base_map.json",
+                    "--watch"
+            );
+            processBuilder.redirectErrorStream(true);
+            processBuilder.inheritIO();
             visualizer = processBuilder.start();
+            writer.write(this);//initialize with an empty game board
         }
         catch(IOException e){
             System.err.println(e.getMessage());

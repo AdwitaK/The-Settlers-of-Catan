@@ -598,6 +598,13 @@ public class Game{
             //Adding these lines for visibility:
             System.out.println(currentRound + " / " + a.getId() + ": Computer selects node (#" + settlementSpot.getId() + ")");
             System.out.println(currentRound + " / " + a.getId() + ": Computer selects edge (#" + roadSpot.getStart() + ", #" + roadSpot.getEnd() + ")");
+            System.out.println("Computer turn ended. Type 'go' to move to the next player.");
+            while (true) {
+                String wait = scanner.nextLine().trim();
+                if (wait.equalsIgnoreCase("go")) {
+                    break;
+                }
+            }
         }
 
         a.buildSettlement(settlementSpot);

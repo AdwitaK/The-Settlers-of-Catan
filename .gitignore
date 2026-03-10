@@ -7,3 +7,5 @@ out/
 target/
 state.json
 scraped_boards/
+dependency-reduced-pom.xml
+visualizer/.venv/

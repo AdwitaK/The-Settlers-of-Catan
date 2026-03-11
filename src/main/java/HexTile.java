@@ -51,7 +51,7 @@ public class HexTile{
         this.robberPlaced = b;
     }
 
-    public boolean getRobberPlaced(){
+    public boolean isRobberPlaced(){
         return robberPlaced;
     }
 }//end of HexTile class

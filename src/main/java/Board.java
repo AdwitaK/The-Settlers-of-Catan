@@ -68,7 +68,7 @@ public class Board{
         HexTile[] producingTiles = {null, null};
         int i = 0;
         for (HexTile currTile: tiles){
-            if (currTile.getToken() == token && !currTile.getRobberPlaced()){
+            if (currTile.getToken() == token && !currTile.isRobberPlaced()){
 				producingTiles[i] = currTile;
 				i++;
             }

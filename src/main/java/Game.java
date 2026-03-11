@@ -156,6 +156,9 @@ public class Game{
     public Trader[] getAgents() {
         return agents;
     }
+    public void setCurrentPlayer(Trader player){
+        currentPlayer = player;
+    }
 
     //Method for calling the right build methods accordingly, depending on the input
     //Only being called by processCommand method above

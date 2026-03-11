@@ -11,12 +11,10 @@ public class HumanAgent extends Agent{
         boolean rolled = false;
 
         while (true) {
-            String input = scanner.nextLine().trim();
+            String input = scanner.nextLine();
+            boolean success = false; //Capture the result of the command
 
-            //Capture the result of the command
-            boolean success = false;
-
-            if (input.equalsIgnoreCase("roll")) {
+            if (input.matches("(?i)^\\s*roll\\s*$"))  {
                 if (rolled) {
                     game.printMessage("Already rolled. You cannot roll again this turn.");
                     continue;
@@ -27,7 +25,7 @@ public class HumanAgent extends Agent{
                     game.printMessage("Roll accepted. You may now build or type 'go' to end turn.");
                 }
             }
-            else if (input.equalsIgnoreCase("go")) {
+            else if (input.matches("(?i)^\\s*go\\s*$"))  {
                 if (!rolled) {
                     game.printMessage("Must roll first.");
                     continue;
@@ -35,13 +33,13 @@ public class HumanAgent extends Agent{
                 break; //Turn ends
             }
             else {
-                if (!rolled && !input.equalsIgnoreCase("list")) {
+                if (!rolled && !input.matches("(?i)^\\s*list\\s*$"))  {
                     game.printMessage("Must roll first.");
                 } else {
                     success = game.processCommand(input);
 
                     //Give feedback if a build was successful
-                    if (success && input.startsWith("build")) {
+                    if (success && input.matches("(?i)^\\s*build.*"))  {
                         game.printMessage("Construction complete! Anything else? (or type 'go')");
                     }
                 }

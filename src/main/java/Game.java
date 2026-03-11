@@ -96,17 +96,16 @@ public class Game{
 
     //Method for parsing the input, by using REGEX
     public boolean processCommand(String input) {
-        //Safety check: ignore empty inputs so they don't trigger "Invalid command"
-        if (input == null || input.trim().isEmpty()) {
-            return false;
+        if (input == null || input.isEmpty()) {
+            return false; // ignore empty input
         }
-        input = input.trim().toLowerCase();
+
         Agent player = (Agent) currentPlayer;
 
         // ---------- ROLL ----------
-        if (input.matches("^roll$")) {
+        if (input.matches("(?i)^\\s*roll\\s*$")) { // case-insensitive + optional spaces
             int roll = dice.roll();
-            System.out.println(currentRound + " / " + player.getId() + ": Rolled a " + roll);
+            System.out.println(currentRound + " / " + player.getId() + ": Rolled a " + roll); //not calling printMessage, because of word 'Rolled a'
 
             if (roll != 7) {
                 produceResource(roll);
@@ -117,39 +116,39 @@ public class Game{
         }
 
         // ---------- LIST ----------
-        if (input.matches("^list$")) {
+        if (input.matches("(?i)^\\s*list\\s*$")) {
             printMessage(player.getHandString());
             return true;
         }
 
-        // ---------- BUILD (Regex Parser) ----------
-        Pattern buildPattern = Pattern.compile("^build\\s+(road|settlement|city)\\s+(\\d+)(?:(\\s*,\\s*|\\s+)(\\d+))?$");
+        // ---------- BUILD ----------
+        Pattern buildPattern = Pattern.compile("^\\s*build\\s+(road|settlement|city)\\s+(\\d+)(?:(\\s*,\\s*|\\s+)(\\d+))?\\s*$", Pattern.CASE_INSENSITIVE);
         Matcher matcher = buildPattern.matcher(input);
 
         if (matcher.matches()) {
-            String type = matcher.group(1);
+            String type = matcher.group(1);   // road, settlement, or city (original case)
             String first = matcher.group(2);
             String separator = matcher.group(3);
             String second = matcher.group(4);
 
-            //Capture the success of the build action
+            // call your existing handleBuild method
             boolean success = handleBuild(type, first, separator, second);
 
-            //Visibility: If the build worked, tell the console exactly what happened
+            // feedback messages for build success
             if (success) {
-                if (type.equals("road")) {
+                if (type.equalsIgnoreCase("road")) {
                     printMessage("Built a road connecting node " + first + " and " + second);
-                } else if (type.equals("settlement")) {
+                } else if (type.equalsIgnoreCase("settlement")) {
                     printMessage("Built a settlement on node " + first);
-                } else if (type.equals("city")) {
+                } else if (type.equalsIgnoreCase("city")) {
                     printMessage("Upgraded settlement to city on node " + first);
                 }
             }
 
-            return success; //Return the result so HumanAgent/RandomAgent knows if it worked
+            return success;
         }
 
-        //The command didn't match anything
+    //The command didn't match anything
         printMessage("Invalid command.");
         return false;
     }
@@ -598,6 +597,13 @@ public class Game{
             //Adding these lines for visibility:
             System.out.println(currentRound + " / " + a.getId() + ": Computer selects node (#" + settlementSpot.getId() + ")");
             System.out.println(currentRound + " / " + a.getId() + ": Computer selects edge (#" + roadSpot.getStart() + ", #" + roadSpot.getEnd() + ")");
+            System.out.println("Computer turn ended. Type 'go' to move to the next player.");
+            while (true) {
+                String wait = scanner.nextLine().trim();
+                if (wait.equalsIgnoreCase("go")) {
+                    break;
+                }
+            }
         }
 
         a.buildSettlement(settlementSpot);

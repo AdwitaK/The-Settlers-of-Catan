@@ -27,10 +27,7 @@ public class Game{
     public Game(int rounds, int numPlayers){//CH - add numPlayers
         this.maxRounds = rounds;
         this.random = new Random();
-        if (numPlayers < 3 || numPlayers > 4) numPlayers = 4; //defaulting to 4 players.
         agents = new Agent[numPlayers];
-
-        if (maxRounds > MapSkeleton.maxRounds) maxRounds = MapSkeleton.maxRounds; //default
 
         agents[0] = new HumanAgent(1); //first player is human
 

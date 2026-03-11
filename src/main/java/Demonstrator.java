@@ -45,13 +45,16 @@ public class Demonstrator {
         Scanner consoleScanner = new Scanner(System.in);
         int maxRounds = -1;
         //Loop until a valid positive integer is entered
-        while (maxRounds <= 0) {
+        while (maxRounds <= 0 || maxRounds > MapSkeleton.maxRounds) {
             System.out.print("Enter maximum rounds to play (positive integer): ");
             String input = consoleScanner.nextLine().trim();
             try {
                 maxRounds = Integer.parseInt(input);
                 if (maxRounds <= 0) {
                     System.out.println("Error: Rounds must be greater than 0.");
+                }
+                if (maxRounds > MapSkeleton.maxRounds) {
+                    System.out.println("Error: Rounds must be less or equal to " + MapSkeleton.maxRounds);
                 }
             } catch (NumberFormatException e) {
                 System.out.println("Error: '" + input + "' is not a valid number. Please try again.");

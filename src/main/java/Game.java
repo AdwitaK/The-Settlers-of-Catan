@@ -315,15 +315,15 @@ public class Game{
         }
     }
 
-    private boolean resourcePayement(int toBuild) {
+    private void resourcePayement(int toBuild) {
         //Cast the currentPlayer to an Agent
         Agent player = (Agent) currentPlayer;
 
-        //Delegate the "Expert" check to the Agent class
-        //This uses the new method in Agent class
-        if (!player.canAfford(toBuild)) {
-            return false; //Stop here if they don't have enough cards
-        }
+//        //Delegate the "Expert" check to the Agent class
+//        //This uses the new method in Agent class
+//        if (!player.canAfford(toBuild)) {
+//            return false; //Stop here if they don't have enough cards
+//        }
 
         //Since we know they can afford it, we perform the actual transaction
         //Define the recipes locally for the removal process
@@ -342,23 +342,23 @@ public class Game{
                 bank.addCard(transitionCard);
             }
         }
-        return true; //Payment successful
+        //return true; //Payment successful
     }
 
-    private void refundResources(int toBuild) {
-        ResourceType[][] materials = {
-                {ResourceType.BRICK, ResourceType.LUMBER},
-                {ResourceType.BRICK, ResourceType.LUMBER, ResourceType.GRAIN, ResourceType.WOOL},
-                {ResourceType.GRAIN, ResourceType.GRAIN, ResourceType.ORE, ResourceType.ORE, ResourceType.ORE}
-        };
-        ResourceType[] recipe = materials[toBuild];
-        for (ResourceType type : recipe) {
-            //Remove one card of this type from the bank
-            Card card = bank.removeCard(type);
-            //Give it back to the player
-            (currentPlayer).addCard(card);
-        }
-    }
+//    private void refundResources(int toBuild) {
+//        ResourceType[][] materials = {
+//                {ResourceType.BRICK, ResourceType.LUMBER},
+//                {ResourceType.BRICK, ResourceType.LUMBER, ResourceType.GRAIN, ResourceType.WOOL},
+//                {ResourceType.GRAIN, ResourceType.GRAIN, ResourceType.ORE, ResourceType.ORE, ResourceType.ORE}
+//        };
+//        ResourceType[] recipe = materials[toBuild];
+//        for (ResourceType type : recipe) {
+//            //Remove one card of this type from the bank
+//            Card card = bank.removeCard(type);
+//            //Give it back to the player
+//            (currentPlayer).addCard(card);
+//        }
+//    }
 
     public List<Edge> getLegalRoadMoves(Agent agent) {
         List<Edge> legalEdges = new ArrayList<>();

@@ -1,11 +1,19 @@
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GameTest {
-
     private Game game;
     private HumanAgent human;
+
+    @BeforeEach
+    void setUp() {
+        game = new Game(1, 1);
+        human = new HumanAgent(1);
+        game.setCurrentPlayer(human);
+
+    }
 
     @Test
     void testRollCommandParsing() {
@@ -30,5 +38,11 @@ public class GameTest {
         assertFalse(game.processCommand(""));
         assertFalse(game.processCommand("1234"));
         assertFalse(game.processCommand(" ro ll "));
+    }
+
+    @Test
+    void testHandleBuildRoadParsing(){
+        assertFalse(game.handleBuild("road", "1", "", "2")); //missing a comma
+        assertFalse(game.processCommand("build road 1 ")); //missing a second node id
     }
 }

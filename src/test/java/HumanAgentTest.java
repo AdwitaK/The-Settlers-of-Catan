@@ -35,4 +35,17 @@ class HumanAgentTest {
 
         assertTrue(true);
     }
+
+    @Test
+    void testListBeforeRoll() {
+        // Inputs: list, then 'roll', then 'go'
+        String input = "list\nroll\ngo\n";
+        Scanner scanner = new Scanner(input);
+
+        HumanAgent human = new HumanAgent(0);
+        TestGame game = new TestGame();
+        human.takeTurn(game, scanner);
+
+        assertTrue(true);
+    }
 }

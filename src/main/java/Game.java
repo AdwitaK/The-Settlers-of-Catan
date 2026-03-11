@@ -162,7 +162,7 @@ public class Game{
 
     //Method for calling the right build methods accordingly, depending on the input
     //Only being called by processCommand method above
-    private boolean handleBuild(String type, String first, String separator, String second) {
+    public boolean handleBuild(String type, String first, String separator, String second) {
         Agent player = (Agent) currentPlayer;
 
         if (type.equals("road")) {

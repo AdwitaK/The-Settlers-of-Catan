@@ -24,7 +24,7 @@ import java.util.Scanner;
  * - Bank interaction
  * - Build validation (legal ande illegal builds)
  * - Resource payment and refund logic
- * Turn progression between human and random agents
+ * - Turn progression between human and random agents
  * - Victory point tracking
  *
  * This class focuses purely on demonstration.
@@ -133,7 +133,6 @@ public class Demonstrator {
         } catch (Exception e) {
             System.err.println("Fatal Game Error: " + e.getMessage());
         }
+        consoleScanner.close();
     }
 }
-
-

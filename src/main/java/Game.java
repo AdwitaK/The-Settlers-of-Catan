@@ -26,24 +26,24 @@ public class Game{
     @SuppressWarnings("java:S2245")
     public Game(int rounds, int numPlayers, boolean demoMode){//CH - add numPlayers
         this.maxRounds = rounds;
-        //this.random = new Random();
         agents = new Agent[numPlayers];
 
         agents[0] = new HumanAgent(1); //first player is human
 
+        if (demoMode) this.random = new Random(12);
+
+        else this.random = new Random();
+
+        dice = new MultiDice(2, random);
+
         for (int i = 1; i < numPlayers; i++){
             if (demoMode){
                 agents[i] = new RandomAgent(i + 1, new Random(i + 20)); //the other players are computers
-                this.random = new Random(12);
-                //System.out.println(i + 20);
             }
             else{
-                this.random = new Random();
                 agents[i] = new RandomAgent(i + 1, new Random()); //the other players are computers
             }
         }
-        dice = new MultiDice(2, random);
-
         board = new Board();
         bank = new Bank();
 

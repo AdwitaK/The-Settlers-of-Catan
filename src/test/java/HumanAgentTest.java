@@ -8,7 +8,7 @@ class HumanAgentTest {
     // Minimal Game stub, just for the purpose of testing
     static class TestGame extends Game {
         public TestGame() {
-            super(1, 1);
+            super(1, 1, true);
         }
 
         @Override

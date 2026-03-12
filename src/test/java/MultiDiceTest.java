@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class MultiDiceTest {
 
     @Test
+    @SuppressWarnings("java:S2245") // Pseudorandom RNG okay for game logic
     void checkDiceRollRange(){
         MultiDice dice = new MultiDice(2, new Random());
         int num = dice.roll();

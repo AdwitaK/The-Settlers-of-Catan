@@ -23,7 +23,7 @@ public class Game{
     private JsonWriter writer;
     private Process visualizer;
 
-    @SuppressWarnings("java:S2245")
+    @SuppressWarnings("java:S2245") // Pseudorandom RNG okay for game logic
     public Game(int rounds, int numPlayers, boolean demoMode){//CH - add numPlayers
         this.maxRounds = rounds;
         agents = new Agent[numPlayers];

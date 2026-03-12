@@ -34,6 +34,7 @@ class HumanAgentTest {
         human.takeTurn(game, scanner);// Run takeTurn: it should respect roll, then go ordering
 
         assertTrue(true);
+        game.endVisualizer();
     }
 
     @Test
@@ -47,5 +48,6 @@ class HumanAgentTest {
         human.takeTurn(game, scanner);
 
         assertTrue(true);
+        game.endVisualizer();
     }
 }

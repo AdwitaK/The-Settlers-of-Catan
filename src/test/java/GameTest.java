@@ -19,11 +19,13 @@ public class GameTest {
     void testRollCommandParsing() {
         assertTrue(game.processCommand("roll")); // First roll
         assertTrue(game.processCommand(" RoLL  ")); //Testing case sensitivity
+        game.endVisualizer();
     }
 
     @Test
     void testGoCommandParsing() {
         assertFalse(game.processCommand("go")); // Can't 'go' before rolling
+        game.endVisualizer();
     }
 
     @Test
@@ -32,11 +34,13 @@ public class GameTest {
         assertFalse(game.processCommand(""));
         assertFalse(game.processCommand("1234"));
         assertFalse(game.processCommand(" ro ll "));
+        game.endVisualizer();
     }
 
     @Test
     void testHandleBuildRoadParsing(){
         assertFalse(game.handleBuild("road", "1", "", "2")); //missing a comma
         assertFalse(game.processCommand("build road 1 ")); //missing a second node id
+        game.endVisualizer();
     }
 }

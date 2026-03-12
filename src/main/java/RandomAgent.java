@@ -39,10 +39,4 @@ public class RandomAgent extends Agent{
             }
         }
     }
-
-
-
-
-
-
-}
+}//end of RandomAgent() class

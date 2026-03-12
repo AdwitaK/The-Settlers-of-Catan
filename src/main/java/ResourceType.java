@@ -23,5 +23,4 @@ public enum ResourceType {
 	public int getIndex(){
 		return index;
 	}
-
-}
+}//end of ResourceType Enum

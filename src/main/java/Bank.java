@@ -23,4 +23,4 @@ public class Bank extends Trader {
             }
         }
     }//end of Bank constructor
-}//end of Bank
+}//end of Bank() Class

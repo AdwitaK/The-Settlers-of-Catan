@@ -24,4 +24,4 @@ public class ResourceCard implements Card{
 	public String getCardType(){
 		return resourceType.toString();
 	}
-}
+}//end of ResourceCard() class

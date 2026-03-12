@@ -13,7 +13,6 @@ import java.util.Random;
 public abstract class Trader{
 	private int[] resourceCount;
     private List<Card> resourceHand;
-    //private Card[] resourceHand;
 
     public Trader(){
         resourceHand = new ArrayList<>();
@@ -40,7 +39,6 @@ public abstract class Trader{
 
         for (int i = 0; i < resourceHand.size(); i++) {
             Card c = resourceHand.get(i);
-            ResourceType resourceType = ResourceType.valueOf(c.getCardType()); //remove
             if (getTypeFromCard(c) == type){
                 resourceHand.remove(i);
                 resourceCount[type.getIndex()]--;
@@ -50,7 +48,7 @@ public abstract class Trader{
         return null; //No matching resource card found
     }//end of removeCard
 
-    public Card removeRandomCard(Random random){//CH2
+    public Card removeRandomCard(Random random){
         if (!resourceHand.isEmpty()){
             int randomCardIndex = random.nextInt(getTotalCardCount());
             Card randomCard = resourceHand.remove(randomCardIndex);
@@ -67,7 +65,7 @@ public abstract class Trader{
         return ResourceType.valueOf(c.getCardType());
     }
 
-    public int[] getResourceCount(){ //CH - new method
+    public int[] getResourceCount(){
         return resourceCount;
     }
 
@@ -87,9 +85,9 @@ public abstract class Trader{
         return sb.toString();
     }
 
-    public int getTotalCardCount(){//CH2
+    public int getTotalCardCount(){
         return resourceHand.size();
     }
-}//end of Trader
+}//end of Trader() class
 
 

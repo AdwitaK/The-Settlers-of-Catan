@@ -17,4 +17,4 @@ public class Node extends Location {
     public int getId(){//CH
         return id;
     }
-}
+}//end of Node() class

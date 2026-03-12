@@ -20,4 +20,4 @@ public class Edge extends Location {
     public int getEnd(){//CH
         return end;
     }
-}//end of Edge
+}//end of Edge() class

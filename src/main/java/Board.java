@@ -4,7 +4,6 @@
 
 import java.util.ArrayList;
 import java.util.List;
-/************************************************************/
 /**
  * This class is responsible for creating and maintaining the state of the game board.
  */
@@ -43,9 +42,7 @@ public class Board{
                 robber = new Robber(tileToAdd);
             }
             tiles.add(tileToAdd);
-            //tiles.add(new HexTile(MapLayout.tileResource[tileID], tileID, MapLayout.tokens[tileID], nodesToAdd, edgesToAdd));
 		}
-
 	}
 
     public List<Node> getAllNodes() {
@@ -77,7 +74,7 @@ public class Board{
 	}
 
 
-    public Node getIDNode(int id){//CH
+    public Node getIDNode(int id){
         for (Location location : nodes) {
             Node n = (Node) location;
             if (n.getId() == id) {  
@@ -87,7 +84,7 @@ public class Board{
         return null; // not found
     }
 
-    public Edge getEdgeByIDNodes(int a, int b){//CH
+    public Edge getEdgeByIDNodes(int a, int b){
         for (Location location : edges){
             Edge e = (Edge) location; //type casting as Edge
             if ((e.getStart() == a && e.getEnd() == b) || (e.getStart() == b && e.getEnd() == a)){
@@ -104,4 +101,4 @@ public class Board{
     public Robber getRobber(){
         return robber;
     }
-}
+}//end of Board() Class

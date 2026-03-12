@@ -9,7 +9,7 @@ public class GameTest {
 
     @BeforeEach
     void setUp() {
-        game = new Game(1, 1);
+        game = new Game(1, 1, false);
         human = new HumanAgent(1);
         game.setCurrentPlayer(human);
 

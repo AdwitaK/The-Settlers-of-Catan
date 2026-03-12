@@ -24,20 +24,29 @@ public class Game{
     private Process visualizer;
 
     @SuppressWarnings("java:S2245")
-    public Game(int rounds, int numPlayers){//CH - add numPlayers
+    public Game(int rounds, int numPlayers, boolean demoMode){//CH - add numPlayers
         this.maxRounds = rounds;
-        this.random = new Random();
+        //this.random = new Random();
         agents = new Agent[numPlayers];
 
         agents[0] = new HumanAgent(1); //first player is human
 
         for (int i = 1; i < numPlayers; i++){
-            agents[i] = new RandomAgent(i+1, random); //the other players are computers
+            if (demoMode){
+                agents[i] = new RandomAgent(i + 1, new Random(i + 20)); //the other players are computers
+                this.random = new Random(12);
+                //System.out.println(i + 20);
+            }
+            else{
+                this.random = new Random();
+                agents[i] = new RandomAgent(i + 1, new Random()); //the other players are computers
+            }
         }
+        dice = new MultiDice(2, random);
 
         board = new Board();
         bank = new Bank();
-        dice = new MultiDice(2);
+
         writer = new JsonWriter("state.json", "visualizer/base_map.json");
         launchVisualizer();
     }//end of Game constructor

@@ -17,8 +17,8 @@ public class RegularDie implements Dice{
 	/**
 	 * Constructor:  Creates a new six‑sided die with its own random number generator.
 	 */
-	public RegularDie(){
-		this.myRandomRandy = new Random();
+	public RegularDie(Random random){
+		this.myRandomRandy = random;
 	}
 
 	/**

@@ -9,6 +9,7 @@
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class MultiDice implements Dice {
 	/**
@@ -23,7 +24,7 @@ public class MultiDice implements Dice {
      * @param numOfDice 						the number of dice to include
      * @throws IllegalArgumentException 		if numOfDice < 1
 	 */
-	public MultiDice(int numOfDice){
+	public MultiDice(int numOfDice, Random random){
 		// Making sure the set has at least one die
 		if(numOfDice <1){
 			throw new IllegalArgumentException("MultiDice must contain at least one die.");
@@ -34,7 +35,7 @@ public class MultiDice implements Dice {
 
 		// Creating the die objects
 		for(int i = 0; i < numOfDice; i++){
-			diceSet.add(new RegularDie());
+			diceSet.add(new RegularDie(random));
 		}
 	}
 

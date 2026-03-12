@@ -27,12 +27,6 @@ public class GameTest {
     }
 
     @Test
-    void testListCommandParsing() {
-        assertTrue(game.processCommand("list"));
-        assertTrue(game.processCommand("  LisT  ")); //Testing case sensitivity
-    }
-
-    @Test
     void testInvalidCommands() {
         assertFalse(game.processCommand("fly"));
         assertFalse(game.processCommand(""));

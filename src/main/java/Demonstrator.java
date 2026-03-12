@@ -62,7 +62,7 @@ public class Demonstrator {
      */
 
     public static void main(String[] args) {
-        Scanner scanner;
+        Scanner scanner = null;
         Scanner consoleScanner = new Scanner(System.in);
         boolean demoMode = false;
         try {
@@ -134,5 +134,8 @@ public class Demonstrator {
             System.err.println("Fatal Game Error: " + e.getMessage());
         }
         consoleScanner.close();
+        if (scanner != null) {
+            scanner.close();
+        }
     }
 }

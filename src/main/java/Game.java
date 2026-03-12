@@ -38,7 +38,7 @@ public class Game{
 
         for (int i = 1; i < numPlayers; i++){
             if (demoMode){
-                agents[i] = new RandomAgent(i + 1, new Random(i + 20)); //the other players are computers
+                agents[i] = new RandomAgent(i + 1, new Random((long) i + 20)); //the other players are computers
             }
             else{
                 agents[i] = new RandomAgent(i + 1, new Random()); //the other players are computers

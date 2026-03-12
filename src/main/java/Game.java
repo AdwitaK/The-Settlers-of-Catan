@@ -351,21 +351,6 @@ public class Game{
         //return true; //Payment successful
     }
 
-//    private void refundResources(int toBuild) {
-//        ResourceType[][] materials = {
-//                {ResourceType.BRICK, ResourceType.LUMBER},
-//                {ResourceType.BRICK, ResourceType.LUMBER, ResourceType.GRAIN, ResourceType.WOOL},
-//                {ResourceType.GRAIN, ResourceType.GRAIN, ResourceType.ORE, ResourceType.ORE, ResourceType.ORE}
-//        };
-//        ResourceType[] recipe = materials[toBuild];
-//        for (ResourceType type : recipe) {
-//            //Remove one card of this type from the bank
-//            Card card = bank.removeCard(type);
-//            //Give it back to the player
-//            (currentPlayer).addCard(card);
-//        }
-//    }
-
     public List<Edge> getLegalRoadMoves(Agent agent) {
         List<Edge> legalEdges = new ArrayList<>();
         //Save state to ensure we don't accidentally skip a human's turn
@@ -801,7 +786,7 @@ public class Game{
 
     }
 
-    private void endVisualizer(){
+    public void endVisualizer(){
         writer.setBaseMap(); //restore base map to original state for next game
         visualizer.destroy();
     }

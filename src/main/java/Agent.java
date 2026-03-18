@@ -173,6 +173,10 @@ public abstract class Agent extends Trader {
 		}
 	}
 
+	public boolean mustSpendCards(){
+		return getTotalCardCount() > 7;
+	}
+
 	//Methods to be overridden in HumanAgent and RandomAgent
 	public abstract void takeTurn(Game game, Scanner scanner);
 }//end of Agent() Class

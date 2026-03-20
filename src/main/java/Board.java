@@ -8,42 +8,42 @@ import java.util.List;
  * This class is responsible for creating and maintaining the state of the game board.
  */
 public class Board{
-	private List<HexTile> tiles;
-	private List<Location> nodes;
-	private List<Location> edges;
+    private List<HexTile> tiles;
+    private List<Location> nodes;
+    private List<Location> edges;
     private Robber robber;
 
-	public Board(){
-		tiles = new ArrayList<>();
-		nodes = new ArrayList<>();
-		edges = new ArrayList<>();
+    public Board(){
+        tiles = new ArrayList<>();
+        nodes = new ArrayList<>();
+        edges = new ArrayList<>();
 
-		//Create all nodes on board
-		for(int i = 0; i< MapSkeleton.nodeCount; i++){
-			nodes.add(new Node(i));
-		}
+        //Create all nodes on board
+        for(int i = 0; i< MapSkeleton.nodeCount; i++){
+            nodes.add(new Node(i));
+        }
 
-		//Create all edges on board
-		for(int i = 0; i< MapSkeleton.edges.length; i++){
-			edges.add(new Edge(MapSkeleton.edges[i][0], MapSkeleton.edges[i][1]));
-		}
+        //Create all edges on board
+        for(int i = 0; i< MapSkeleton.edges.length; i++){
+            edges.add(new Edge(MapSkeleton.edges[i][0], MapSkeleton.edges[i][1]));
+        }
 
-		//Create all hex tiles
-		for (int tileID = 0; tileID< MapSkeleton.numOfTiles; tileID++){
-			Location[] nodesToAdd = new Node [6];
-			Location[] edgesToAdd = new Edge [6];
-			for(int j = 0; j<6; j++){
-				nodesToAdd[j] = nodes.get(MapSkeleton.tileNodes[tileID][j]);
-				edgesToAdd[j] = edges.get(MapSkeleton.tileEdges[tileID][j]);
-			}
+        //Create all hex tiles
+        for (int tileID = 0; tileID< MapSkeleton.numOfTiles; tileID++){
+            Location[] nodesToAdd = new Node [6];
+            Location[] edgesToAdd = new Edge [6];
+            for(int j = 0; j<6; j++){
+                nodesToAdd[j] = nodes.get(MapSkeleton.tileNodes[tileID][j]);
+                edgesToAdd[j] = edges.get(MapSkeleton.tileEdges[tileID][j]);
+            }
 
             HexTile tileToAdd = new HexTile(MapLayout.tileResource[tileID], tileID, MapLayout.tokens[tileID], nodesToAdd, edgesToAdd);
             if (tileID == 16){ //landID of the desert tile
                 robber = new Robber(tileToAdd);
             }
             tiles.add(tileToAdd);
-		}
-	}
+        }
+    }
 
     public List<Node> getAllNodes() {
         List<Node> allNodes = new ArrayList<>();
@@ -66,18 +66,18 @@ public class Board{
         int i = 0;
         for (HexTile currTile: tiles){
             if (currTile.getToken() == token && !currTile.isRobberPlaced()){
-				producingTiles[i] = currTile;
-				i++;
+                producingTiles[i] = currTile;
+                i++;
             }
         }
         return producingTiles;
-	}
+    }
 
 
     public Node getIDNode(int id){
         for (Location location : nodes) {
             Node n = (Node) location;
-            if (n.getId() == id) {  
+            if (n.getId() == id) {
                 return n;
             }
         }
@@ -94,9 +94,9 @@ public class Board{
         return null;
     }
 
-	public List<HexTile> getTiles(){
-		return tiles;
-	}
+    public List<HexTile> getTiles(){
+        return tiles;
+    }
 
     public Robber getRobber(){
         return robber;
@@ -113,5 +113,124 @@ public class Board{
             }
         }
         return result;
+    }
+
+    /**
+     * Returns true if no neighbouring node is occupied — enforces the distance rule.
+     */
+    public boolean noAdjacentSettlements(Node node) {
+        int nodeId = node.getId();
+        for (int[] e : MapSkeleton.edges) {
+            if (e[0] == nodeId || e[1] == nodeId) {
+                int neighborId = (e[0] == nodeId) ? e[1] : e[0];
+                Node neighbor = this.getIDNode(neighborId);
+                if (neighbor.isOccupied()) return false;
+            }
+        }
+        return true;
+    }
+    /**
+     * Returns true if the given agent may legally place a road on this edge.
+     */
+    public boolean canBuildRoad(Edge edge, Agent player, Trader[] agents) {
+        if (edge.isOccupied()) return false;
+
+        int a = edge.getStart();
+        int b = edge.getEnd();
+
+        for (int i = 0; i < player.getInfraCount(); i++) {
+            Infrastructure infra = player.getInfrastructure()[i];
+            Location loc = infra.getLocation();
+
+            // Connected to player's settlement or city
+            if (loc instanceof Node n) {
+                if (n.getId() == a || n.getId() == b) return true;
+            }
+
+            // Connected to player's road
+            if (loc instanceof Edge e) {
+                boolean isConnected = (e.getStart() == a || e.getStart() == b
+                        || e.getEnd() == a || e.getEnd() == b);
+                if (isConnected) {
+                    int sharedNode = (e.getStart() == a || e.getEnd() == a) ? a : b;
+
+                    // Blocked if an enemy building sits on the shared node
+                    if (isBlocked(sharedNode, player, agents)) return false;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    /**
+     * Returns true if the given agent may legally place a settlement on this node.
+     */
+    public boolean canBuildSettlement(Node node, Agent player) {
+        if (node.isOccupied()) return false;
+
+        int nodeId = node.getId();
+        boolean connectedToRoad = false;
+
+        for (int i = 0; i < player.getInfraCount(); i++) {
+            Infrastructure infra = player.getInfrastructure()[i];
+            if (infra instanceof Road) {
+                Edge e = (Edge) infra.getLocation();
+                if (e.getStart() == nodeId || e.getEnd() == nodeId) {
+                    connectedToRoad = true;
+                    break;
+                }
+            }
+        }
+
+        return connectedToRoad && noAdjacentSettlements(node);
+    }
+    /**
+     * Returns true if the given agent may legally upgrade to a city on this node.
+     */
+    public boolean canBuildCity(Node node, Agent player) {
+        for (int i = 0; i < player.getInfraCount(); i++) {
+            Infrastructure infra = player.getInfrastructure()[i];
+            if (infra instanceof Settlement && infra.getLocation() == node) return true;
+        }
+        return false;
+    }
+    /**
+     * Returns true if an enemy agent (not self) has a settlement or city on nodeId.
+     */
+    public boolean isBlocked(int nodeId, Agent self, Trader[] agents) {
+        for (Trader t : agents) {
+            if (!(t instanceof Agent other)) continue;
+            if (other == self) continue;
+            for (int i = 0; i < other.getInfraCount(); i++) {
+                Infrastructure infra = other.getInfrastructure()[i];
+                if (infra instanceof Settlement || infra instanceof City) {
+                    if (((Node) infra.getLocation()).getId() == nodeId) return true;
+                }
+            }
+        }
+        return false;
+    }
+    public List<Edge> getLegalRoadMoves(Agent agent, Trader[] agents) {
+        List<Edge> legal = new ArrayList<>();
+        for (Edge e : getAllEdges()) {
+            if (canBuildRoad(e, agent, agents)) legal.add(e);
+        }
+        return legal;
+    }
+
+    public List<Node> getLegalSettlementMoves(Agent agent) {
+        List<Node> legal = new ArrayList<>();
+        for (Node n : getAllNodes()) {
+            if (canBuildSettlement(n, agent)) legal.add(n);
+        }
+        return legal;
+    }
+
+    public List<Node> getLegalCityMoves(Agent agent) {
+        List<Node> legal = new ArrayList<>();
+        for (Node n : getAllNodes()) {
+            if (canBuildCity(n, agent)) legal.add(n);
+        }
+        return legal;
     }
 }//end of Board() Class

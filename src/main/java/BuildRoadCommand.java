@@ -1,10 +1,12 @@
 public class BuildRoadCommand implements Command {
-    private final Game game;
+    private final GameManager game;
+    private final Trader bank;
     private final Agent player;
     private final Edge edge;
 
-    public BuildRoadCommand(Game game, Agent player, Edge edge){
+    public BuildRoadCommand(GameManager game, Trader bank, Agent player, Edge edge){
         this.game = game;
+        this.bank = bank;
         this.player = player;
         this.edge = edge;
     }
@@ -15,7 +17,7 @@ public class BuildRoadCommand implements Command {
 
         for (ResourceType type : cost) {
             Card card = player.removeCard(type);   // take from player
-            game.getBank().addCard(card);          // give to bank
+            bank.addCard(card);          // give to bank
         }
     }
 
@@ -52,8 +54,8 @@ public class BuildRoadCommand implements Command {
         player.addCard(new ResourceCard(ResourceType.BRICK));
         player.addCard(new ResourceCard(ResourceType.LUMBER));
 
-        game.getBank().removeCard(ResourceType.BRICK);
-        game.getBank().removeCard(ResourceType.LUMBER);
+        bank.removeCard(ResourceType.BRICK);
+        bank.removeCard(ResourceType.LUMBER);
 
         game.updateBoard();
     }

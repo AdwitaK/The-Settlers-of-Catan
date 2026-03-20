@@ -101,4 +101,17 @@ public class Board{
     public Robber getRobber(){
         return robber;
     }
+
+    public List<Edge> getEdgesFromNode(int nodeId){//UML
+        List<Edge> result = new ArrayList<>();
+
+        for (Location location : edges){
+            Edge e = (Edge) location;
+
+            if (e.getStart() == nodeId || e.getEnd() == nodeId) {
+                result.add(e);
+            }
+        }
+        return result;
+    }
 }//end of Board() Class

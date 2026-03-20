@@ -1,6 +1,8 @@
 # Team-12-Catan
 
-SonarQube Badge: [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=AdwitaK_The-Settlers-of-Catan&metric=bugs)](https://sonarcloud.io/summary/new_code?id=AdwitaK_The-Settlers-of-Catan)
+SonarQube Badge: 
+
+[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=AdwitaK_The-Settlers-of-Catan)](https://sonarcloud.io/summary/new_code?id=AdwitaK_The-Settlers-of-Catan)
 
 ## Setup Instructions
 1. Clone this repository

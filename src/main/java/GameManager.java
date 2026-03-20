@@ -623,4 +623,8 @@ public class GameManager{
             System.out.println(currentRound + " / " + newOwner.getId() + ": claimed Longest Road at length " + currentLongestRoadLen);
         }
     }
+
+    public void setCurrentPlayer(Trader currentPlayer){
+        this.currentPlayer = currentPlayer;
+    }
 }//end of GameManager class

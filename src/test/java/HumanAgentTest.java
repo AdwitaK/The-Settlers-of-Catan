@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class HumanAgentTest {
 
     // Minimal Game stub, just for the purpose of testing
-    static class TestGame extends Game {
+    static class TestGame extends GameManager {
         public TestGame() {
             super(1, 1, true);
         }

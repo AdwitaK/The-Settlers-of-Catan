@@ -4,12 +4,12 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GameTest {
-    private Game game;
+    private GameManager game;
     private HumanAgent human;
 
     @BeforeEach
     void setUp() {
-        game = new Game(1, 1, false);
+        game = new GameManager(1, 1, false);
         human = new HumanAgent(1);
         game.setCurrentPlayer(human);
 

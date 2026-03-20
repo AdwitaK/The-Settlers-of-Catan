@@ -1,11 +1,13 @@
 public class BuildSettlementCommand implements Command {
 
-    private final Game game;
+    private final GameManager game;
+    private final Trader bank;
     private final Agent player;
     private final Node node;
 
-    public BuildSettlementCommand(Game game, Agent player, Node node) {
+    public BuildSettlementCommand(GameManager game, Trader bank, Agent player, Node node) {
         this.game = game;
+        this.bank = bank;
         this.player = player;
         this.node = node;
     }
@@ -20,7 +22,7 @@ public class BuildSettlementCommand implements Command {
 
         for (ResourceType type : cost) {
             Card card = player.removeCard(type);
-            game.getBank().addCard(card);
+            bank.addCard(card);
         }
     }
 
@@ -59,7 +61,7 @@ public class BuildSettlementCommand implements Command {
 
         for (ResourceType type : refund) {
             player.addCard(new ResourceCard(type));
-            game.getBank().removeCard(type);
+            bank.removeCard(type);
         }
 
         game.updateBoard();

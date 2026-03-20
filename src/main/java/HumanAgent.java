@@ -7,7 +7,7 @@ public class HumanAgent extends Agent{
 
 
     @Override
-    public void takeTurn(Game game, Scanner scanner) {
+    public void takeTurn(GameManager game, Scanner scanner) {
         boolean rolled = false;
 
         while (true) {
@@ -37,8 +37,8 @@ public class HumanAgent extends Agent{
                     //Checking if they have enough resources to build and if there are valid locations for them to even build
                     boolean canBuild =
                             this.canAfford(2) && !game.getLegalCityMoves(this).isEmpty() ||
-                            this.canAfford(1) && !game.getLegalSettlementMoves(this).isEmpty() ||
-                            this.canAfford(0) && !game.getLegalRoadMoves(this).isEmpty();
+                                    this.canAfford(1) && !game.getLegalSettlementMoves(this).isEmpty() ||
+                                    this.canAfford(0) && !game.getLegalRoadMoves(this).isEmpty();
 
                     if(canBuild){
                         game.printMessage("You have more than 7 cards. You must build before ending your turn.");

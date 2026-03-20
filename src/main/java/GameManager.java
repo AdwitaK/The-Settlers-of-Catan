@@ -7,7 +7,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Game{
+public class GameManager{
     private int maxRounds;
     private int currentRound;
     private Board board;
@@ -29,7 +29,7 @@ public class Game{
     private int currentLongestRoadLen;//UML
 
     @SuppressWarnings("java:S2245") // Pseudorandom RNG okay for game logic
-    public Game(int rounds, int numPlayers, boolean demoMode){
+    public GameManager(int rounds, int numPlayers, boolean demoMode){
         this.maxRounds = rounds;
         agents = new Agent[numPlayers];
 
@@ -159,16 +159,13 @@ public class Game{
             return success;
         }
 
-    //The command didn't match anything
+        //The command didn't match anything
         printMessage("Invalid command.");
         return false;
     }
 
     public Trader[] getAgents() {
         return agents;
-    }
-    public void setCurrentPlayer(Trader player){
-        currentPlayer = player;
     }
 
     //Method for calling the right build methods accordingly, depending on the input
@@ -191,7 +188,7 @@ public class Game{
             int b = Integer.parseInt(second);
             Edge edge = board.getEdgeByIDNodes(a, b);
 
-            if (edge == null || !canBuildRoad(edge)) {
+            if (edge == null || !board.canBuildRoad(edge, player, agents)) {
                 printMessage("Illegal road placement.");
                 return false;
             }
@@ -203,7 +200,7 @@ public class Game{
 
             try{
                 // Update for undo/redo mechanism
-                commandManager.executeCommand(new BuildRoadCommand(this, player, edge));
+                commandManager.executeCommand(new BuildRoadCommand(this, bank, player, edge));
                 updateLongestRoadOwner();
             }
             catch(Exception e){
@@ -220,7 +217,7 @@ public class Game{
             int id = Integer.parseInt(first);
             Node node = board.getIDNode(id);
 
-            if (node == null || !canBuildSettlement(node)) {
+            if (node == null || !board.canBuildSettlement(node, player)) {
                 printMessage("Illegal settlement placement.");
                 return false;
             }
@@ -233,7 +230,7 @@ public class Game{
             try{
 
                 // Update for undo/redo mechanism
-                commandManager.executeCommand(new BuildSettlementCommand(this, player, node));
+                commandManager.executeCommand(new BuildSettlementCommand(this, bank, player, node));
                 recomputeLongestRoad();
             }
             catch(Exception e){
@@ -250,7 +247,7 @@ public class Game{
             int id = Integer.parseInt(first);
             Node node = board.getIDNode(id);
 
-            if (node == null || !canBuildCity(node)) {
+            if (node == null || !board.canBuildCity(node, player)) {
                 printMessage("Illegal city placement.");
                 return false;
             }
@@ -261,7 +258,7 @@ public class Game{
 
             try{
                 // Update for undo/redo mechanism
-                commandManager.executeCommand(new BuildCityCommand(this, player, node));
+                commandManager.executeCommand(new BuildCityCommand(this, bank, player, node));
             }
             catch(Exception e){
                 printMessage(e.getMessage());
@@ -303,7 +300,7 @@ public class Game{
                         for (Location node : tileNodes){
                             if (infra.getLocation() == node){
                                 int amount = (infra instanceof City) ? 2 : 1; //if city, then it produces 2*resource, otherwise it's a settlement which gives 1*resource
-                        
+
                                 //Give the agent the resource
                                 for (int j=0; j<amount; j++){
                                     Card cardFromBank = bank.removeCard(resourceType); //remove the card from the bank
@@ -324,75 +321,18 @@ public class Game{
         }
     }//end of produceResource()
 
-    private void resourcePayement(int toBuild) {//db - change name
-        //Cast the currentPlayer to an Agent
-        Agent player = (Agent) currentPlayer;
 
-        //Since we know they can afford it, we perform the actual transaction
-        //Define the recipes locally for the removal process
-        ResourceType[][] materials = {
-                {ResourceType.BRICK, ResourceType.LUMBER}, //Road
-                {ResourceType.BRICK, ResourceType.LUMBER, ResourceType.GRAIN, ResourceType.WOOL}, //Settlement
-                {ResourceType.GRAIN, ResourceType.GRAIN, ResourceType.ORE, ResourceType.ORE, ResourceType.ORE} //City
-        };
-
-        ResourceType[] recipe = materials[toBuild];
-
-        //Remove cards from player and give to bank
-        for (ResourceType type : recipe) {
-            Card transitionCard = player.removeCard(type);
-            if (transitionCard != null) {
-                bank.addCard(transitionCard);
-            }
-        }
-    }
 
     public List<Edge> getLegalRoadMoves(Agent agent) {
-        List<Edge> legalEdges = new ArrayList<>();
-        //Save state to ensure we don't accidentally skip a human's turn
-        Trader original = this.currentPlayer;
-        this.currentPlayer = agent;
-
-        for (Edge e : board.getAllEdges()) {
-            if (e != null && this.canBuildRoad(e)) {
-                legalEdges.add(e);
-            }
-        }
-
-        this.currentPlayer = original; //Restore original turn state
-        return legalEdges;
+        return board.getLegalRoadMoves(agent, agents);
     }
 
     public List<Node> getLegalSettlementMoves(Agent agent) {
-        List<Node> legalNodes = new ArrayList<>();
-        //Save state to ensure we don't accidentally skip a human's turn
-        Trader original = this.currentPlayer;
-        this.currentPlayer = agent;
-
-        for (Node n : board.getAllNodes()) {
-            if (n != null && this.canBuildSettlement(n)) {
-                legalNodes.add(n);
-            }
-        }
-
-        this.currentPlayer = original; //Restore original turn state
-        return legalNodes;
+        return board.getLegalSettlementMoves(agent);
     }
 
     public List<Node> getLegalCityMoves(Agent agent) {
-        List<Node> legalNodes = new ArrayList<>();
-        //Save state to ensure we don't accidentally skip a human's turn
-        Trader originalPlayer = this.currentPlayer;
-        this.currentPlayer = agent;
-
-        for (Node n : board.getAllNodes()) {
-            if (n != null && this.canBuildCity(n)) {
-                legalNodes.add(n);
-            }
-        }
-
-        this.currentPlayer = originalPlayer; //Restore original turn state
-        return legalNodes;
+        return board.getLegalCityMoves(agent);
     }
 
     private Location roadEdgeInput(Scanner s) {
@@ -442,99 +382,15 @@ public class Game{
         return node;
     }
 
-    private boolean canBuildRoad(Edge edge){
-        Agent player = (Agent) currentPlayer; //type casting to use Agent methods, not just Trader
-        if (edge.isOccupied()) return false;
+    // canBuildRoad() moved to Board
 
-        int a = edge.getStart();
-        int b = edge.getEnd();
+    // canBuildSettlement() moved to Board
 
-        //Check player's infrastructure
-        for (int i = 0; i < player.getInfraCount(); i++) {
-            Infrastructure infra = player.getInfrastructure()[i];
-            Location loc = infra.getLocation();
-
-            //Connected to player's settlement/city
-            if (loc instanceof Node){
-                Node n = (Node) loc;
-                if (n.getId() == a || n.getId() == b) return true;
-            }
-
-            //Connected to player's road
-            if (loc instanceof Edge) {
-                Edge e = (Edge) loc;
-                boolean isConnected = (e.getStart() == a || e.getStart() == b || e.getEnd() == a   || e.getEnd() == b);
-                if (isConnected){
-                    //finds the shared node ID
-                    int sharedNode;
-                    if (e.getStart() == a || e.getEnd() == a) sharedNode = a;
-                    else sharedNode = b;
-
-                    //If shared node is occupied by ANOTHER player - build should fail
-                    for (Trader players : agents){
-                        Agent enemyPlayer = (Agent) players;
-                        if (enemyPlayer == player) continue; //no need to check if the node is the currplayer's or not
-
-                        for (int j = 0; j < enemyPlayer.getInfraCount(); j++){
-                            Infrastructure otherInfra = enemyPlayer.getInfrastructure()[j];
-
-                            if (otherInfra instanceof Settlement || otherInfra instanceof City){
-                                Node otherNode = (Node) otherInfra.getLocation();
-                                if (otherNode.getId() == sharedNode){
-                                    return false; //build has been blocked by enemy building
-                                }
-                            }
-                        }//end of for loop
-                    }
-                    return true;
-                }
-            }
-        }//end of for loop (checking player's infrastructures)
-        return false;
-    }//end of canBuildRoad
-
-    private boolean canBuildSettlement(Node node){ //Ch
-        Agent player = (Agent) currentPlayer;
-        if (node.isOccupied()) return false;
-
-        int nodeId = node.getId();
-
-        //must connect to player's existing road
-        boolean connectedToRoad = false;
-
-        for (int i = 0; i < player.getInfraCount(); i++) {
-            Infrastructure infra = player.getInfrastructure()[i];
-
-            if (infra instanceof Road){
-                Edge e = (Edge) infra.getLocation();
-
-                if (e.getStart() == nodeId || e.getEnd() == nodeId) {
-                    connectedToRoad = true;
-                    break;
-                }
-            }
-        }//end of for loop (checking player's infrastructures)
-
-        if (!connectedToRoad) return false;
-
-        if (!noAdjacentSettlements(node)) return false;
-
-        return true;
-    }//end of canBuildSettlement()
-
-    private boolean canBuildCity(Node node){
-        Agent player = (Agent) currentPlayer;
-        for (int i = 0; i < player.getInfraCount(); i++){
-            Infrastructure infra = player.getInfrastructure()[i];
-            //Checking if the infra. is a settlement and has the same location as where the player wants to place City
-            if (infra instanceof Settlement && infra.getLocation() == node) return true;
-        }//end of for loop (checking player's infrastructures)
-        return false;
-    }//end of canBuildCity()
+    // canBuildCity() moved to Board
 
     private void giveResourceInitialSetup(Node node, Trader currentPlayer){
         Agent player = (Agent) currentPlayer;
-        
+
         for (HexTile tile : board.getTiles()){
             Location[] tileNodes = tile.getNodes();
 
@@ -611,7 +467,7 @@ public class Game{
         // We get all nodes, so we are iterating 0 to 53
         for (int i = 0; i < 54; i++) {
             Node n = board.getIDNode(i);
-            if (n != null && !n.isOccupied() && noAdjacentSettlements(n)) {
+            if (n != null && !n.isOccupied() && board.noAdjacentSettlements(n)) {
                 validNodes.add(n);
             }
         }
@@ -639,7 +495,7 @@ public class Game{
     private Node setupSettlementInput(Scanner scanner){
         while (true){
             Node node = (Node) buildingNodeInput(scanner);
-            if (node.isOccupied() || !noAdjacentSettlements(node)){
+            if (node.isOccupied() || !board.noAdjacentSettlements(node)){
                 System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Illegal build");
                 continue; //Get user input again
             }
@@ -665,100 +521,17 @@ public class Game{
         }
     }//end of setupRoadInput()
 
-    private boolean noAdjacentSettlements(Node node){
-        int nodeId = node.getId();
+    // noAdjacentSettlements() moved to Board
 
-        for (int[] e : MapSkeleton.edges){
-            if (e[0] == nodeId || e[1] == nodeId){
-
-                int neighborId;
-                if (e[0] == nodeId) neighborId = e[1];
-                else neighborId = e[0];
-
-                Node neighbor = board.getIDNode(neighborId);
-                if (neighbor.isOccupied()) return false;
-            }
-        }
-        return true;
-    }//end of noAdjacentSettlements()
-
-    private void robberPlay(){
-        Robber robber = board.getRobber();
-
-        //Discard Phase
-        for (Trader agent : agents){
-            Agent player = (Agent) agent;
-            int agentCardCount = player.getTotalCardCount();
-            if (agentCardCount > 7){
-                List<Card> discardCards = player.discardHalfOfHand(random);
-                for (Card discardCard : discardCards)
-                    bank.addCard(discardCard);
-
-                if (!discardCards.isEmpty()){
-                    //printMessage(": discard half their deck");
-                    System.out.println(currentRound + " / " + player.getId() + ": Discard half their deck");
-                }
-            }
-        }
-        //Robber Move Phase
-        List<HexTile> tiles = board.getTiles();
-        HexTile targetTile;
-        do {
-            int randomTileID = random.nextInt(tiles.size());
-            targetTile = tiles.get(randomTileID);
-        } while (!robber.moveRobber(targetTile)); //the loops runs again if the random id was the same as the old location of the robber
-
-        //System.out.println(currentRound + " / " + ((Agent) currentPlayer).getId() + ": moved the robber to tile " + targetTile.getlandTileID());
-        writer.moveRobber(targetTile.getlandTileID());
-        printMessage("Moved the robber to tile " + targetTile.getlandTileID());
-
-        //Steal Phase
-        Location[] tileNodes = targetTile.getNodes();
-        //List<Agent> qualifyingAgents = new ArrayList<>();
-        Set<Agent> qualifyingAgents = new HashSet<>(); //Prevents duplicate victims
-
-        //find all qualifying players (adjacent to robber tile)
-        for (Trader agent : agents){
-            if (agent != currentPlayer && agent instanceof Agent enemyAgent){ //type-casting
-                boolean found = false;
-                //Loop over each infrastructure of the agent
-                for (int i = 0; i < enemyAgent.getInfraCount() && !found; i++) {
-                    Infrastructure infra = enemyAgent.getInfrastructure()[i];
-                    //Check if that infrastructure is on this tile
-                    for (Location node : tileNodes){
-                        if (infra.getLocation() == node){
-                            qualifyingAgents.add(enemyAgent); //agent added to qualifyingAgents to be robbed blind
-                            found = true;
-                            break;
-                        }
-                    }//end of for
-                }//end of for
-            }//end of if
-        }//end of for
-
-        if (!qualifyingAgents.isEmpty()) {
-            List<Agent> victimList = new ArrayList<>(qualifyingAgents); //changes it to an arraylist from a hashset
-
-            int randomQualifyingAgent = random.nextInt(victimList.size()); //number between [0 - size of the num of qualifying agents]
-
-            Agent victim = victimList.get(randomQualifyingAgent);
-            //steal random card from victim
-            Card stolenCard = victim.removeRandomCard(random);
-            if (stolenCard != null){
-                currentPlayer.addCard(stolenCard);
-                printMessage("Steals a card from " + victim.getId());
-                //System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": steals a card from" + victim.getId());
-            }
-            else {
-                printMessage(victim.getId() + " Has no cards to steal");
-                //System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + victim.getId() + " has no cards to steal");
-            }
-        }//end of if
+    private void robberPlay() {
+        // Robber logic delegated to Robber.activate() — discard, move, and steal
+        // are all self-contained within the Robber class
+        board.getRobber().activate(agents, currentPlayer, bank, board.getTiles(), random, currentRound, writer);
     }//end of robberPlay()
 
     // Making this method public so undo/redo mechanism works
     public void updateBoard(){
-        writer.write(this);
+        writer.write(agents);
     }
 
     private void launchVisualizer(){
@@ -774,7 +547,7 @@ public class Game{
             processBuilder.redirectErrorStream(true);
             processBuilder.inheritIO();
             visualizer = processBuilder.start();
-            writer.write(this);//initialize with an empty game board
+            updateBoard();//initialize with an empty game board
         }
         catch(IOException e){
             System.err.println(e.getMessage());
@@ -799,25 +572,10 @@ public class Game{
     public Board getBoard() {
         return board;
     }
-    public boolean isBlocked(int nodeId, Agent agent){//UML
-        for (Trader t : getAgents()){
-            if (!(t instanceof Agent other)) continue;
-            if (other == agent) continue; //comparing object identity, not inside value
 
-            for (int i = 0; i < other.getInfraCount(); i++){
-                Infrastructure infra = other.getInfrastructure()[i];
-
-                if (infra instanceof Settlement || infra instanceof City){
-                    Node n = (Node) infra.getLocation();
-
-                    if (n.getId() == nodeId){
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }//end of isBlocked()
+    public boolean isBlocked(int nodeId, Agent agent) {
+        return board.isBlocked(nodeId, agent, agents);
+    }
 
     public void updateLongestRoadOwner(){//UML
         Agent a = (Agent) currentPlayer;
@@ -865,4 +623,4 @@ public class Game{
             System.out.println(currentRound + " / " + newOwner.getId() + ": claimed Longest Road at length " + currentLongestRoadLen);
         }
     }
-}//end of Game() class
+}//end of GameManager class

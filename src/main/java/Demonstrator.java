@@ -123,7 +123,7 @@ public class Demonstrator {
 
             System.out.println("\n↳ Initializing Game with " + maxRounds + " rounds and " + numPlayers + " players...");
 
-            Game game = new Game(maxRounds, numPlayers, demoMode);
+            GameFacade game = new GameFacade(maxRounds, numPlayers, demoMode);
 
             game.run(scanner);
 

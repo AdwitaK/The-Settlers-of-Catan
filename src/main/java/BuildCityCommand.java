@@ -9,8 +9,21 @@ public class BuildCityCommand implements Command {
         this.node = node;
     }
 
+    private void chargeResources() {
+        ResourceType[] cost = {
+                ResourceType.GRAIN, ResourceType.GRAIN,
+                ResourceType.ORE, ResourceType.ORE, ResourceType.ORE
+        };
+
+        for (ResourceType type : cost) {
+            Card card = player.removeCard(type);
+            game.getBank().addCard(card);
+        }
+    }
+
     @Override
     public void execute() {
+        chargeResources();
         player.buildCity(node);
         game.updateBoard();
     }

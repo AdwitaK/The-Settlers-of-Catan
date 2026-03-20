@@ -9,8 +9,19 @@ public class BuildRoadCommand implements Command {
         this.edge = edge;
     }
 
+    // Charge resources for road
+    private void chargeResources(){
+        ResourceType[] cost = { ResourceType.BRICK, ResourceType.LUMBER };
+
+        for (ResourceType type : cost) {
+            Card card = player.removeCard(type);   // take from player
+            game.getBank().addCard(card);          // give to bank
+        }
+    }
+
     @Override
     public void execute() {
+        chargeResources();
         player.buildRoad(edge);
         game.updateBoard();
     }
@@ -31,8 +42,10 @@ public class BuildRoadCommand implements Command {
             }
         }
 
-        // Restoring
+        // Restoring road
         player.restoreRoad();
+
+        // Clearing occupancy
         edge.clearOccupied();
 
         // Refund resources

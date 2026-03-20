@@ -204,7 +204,6 @@ public class Game{
                 return false;
             }
 
-            resourcePayement(0);
             updateBoard();
             return true;
         }
@@ -232,7 +231,6 @@ public class Game{
                 return false;
             }
 
-            resourcePayement(1);
             updateBoard();
             return true;
         }
@@ -259,7 +257,6 @@ public class Game{
                 return false;
             }
 
-            resourcePayement(2);
             updateBoard();
             return true;
         }

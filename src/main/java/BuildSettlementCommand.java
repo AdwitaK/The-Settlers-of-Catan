@@ -10,8 +10,23 @@ public class BuildSettlementCommand implements Command {
         this.node = node;
     }
 
+    private void chargeResources() {
+        ResourceType[] cost = {
+                ResourceType.BRICK,
+                ResourceType.LUMBER,
+                ResourceType.GRAIN,
+                ResourceType.WOOL
+        };
+
+        for (ResourceType type : cost) {
+            Card card = player.removeCard(type);
+            game.getBank().addCard(card);
+        }
+    }
+
     @Override
     public void execute() {
+        chargeResources();
         player.buildSettlement(node);
         game.updateBoard();
     }

@@ -54,4 +54,4 @@ public class HexTile{
     public boolean isRobberPlaced(){
         return robberPlaced;
     }
-}//end of HexTile class
+}//end of HexTile() class

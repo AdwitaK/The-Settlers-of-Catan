@@ -37,4 +37,4 @@ public abstract class Infrastructure{
     public Location getLocation(){
         return location;
     }
-}
+}//end of Infrastructure() class

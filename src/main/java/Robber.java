@@ -1,12 +1,9 @@
 public class Robber {
     private HexTile currentTile;
-    //private int currLandTileID;
 
     public Robber(HexTile startTile){
         this.currentTile = startTile;
-        //this.currLandTileID = 16;
     }
-
 
     public boolean moveRobber(HexTile newTile){
         //check if the robber is already on this tile
@@ -28,7 +25,5 @@ public class Robber {
     public HexTile getCurrentTile(){
         return currentTile;
     }
-//    public int getCurrentTile() {
-//        return currLandTileID;
-//    }
-}
+
+}//end of Robber() class

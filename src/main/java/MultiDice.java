@@ -53,4 +53,4 @@ public class MultiDice implements Dice {
 		}
 		return total;
 	}
-}
+}//end of MutiDice() class

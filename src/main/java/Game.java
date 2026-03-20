@@ -18,13 +18,12 @@ public class Game{
 
     private Random random;
 
-    //CH - add CurentPlayer
     private Trader currentPlayer;
     private JsonWriter writer;
     private Process visualizer;
 
     @SuppressWarnings("java:S2245") // Pseudorandom RNG okay for game logic
-    public Game(int rounds, int numPlayers, boolean demoMode){//CH - add numPlayers
+    public Game(int rounds, int numPlayers, boolean demoMode){
         this.maxRounds = rounds;
         agents = new Agent[numPlayers];
 
@@ -98,8 +97,6 @@ public class Game{
         endVisualizer();
     }//end of run()
 
-    //NEW METHODS ADDED FOR ASSIGNMENT 2 BELOW ----- :
-
     //Method for parsing the input, by using REGEX
     public boolean processCommand(String input) {
         if (input == null || input.isEmpty()) {
@@ -150,7 +147,6 @@ public class Game{
                     printMessage("Upgraded settlement to city on node " + first);
                 }
             }
-
             return success;
         }
 
@@ -206,7 +202,6 @@ public class Game{
 
             resourcePayement(0);
             updateBoard();
-            System.out.println("Updated board (1)");//debug
             return true;
         }
 
@@ -234,7 +229,6 @@ public class Game{
 
             resourcePayement(1);
             updateBoard();
-            System.out.println("Updated board (2)");//debug
             return true;
         }
 
@@ -261,7 +255,6 @@ public class Game{
 
             resourcePayement(2);
             updateBoard();
-            System.out.println("Updated board (3)");//debug
             return true;
         }
 
@@ -273,12 +266,7 @@ public class Game{
         System.out.println(currentRound + " / " + ((Agent) currentPlayer).getId() + ": " + message);
     }
 
-
-    //find the hextile that has that corresponding token
-    //from that hextile, get his array of nodes
-    //from that, loop through the node to see if any of the node is occupied
-    //if that node is occupied, then get array from each agent to get their array of infrastructure
-    //from that, check if the node that we currently have (as occupied) matches any of the agent's infrastructure node (whether that is city or node)
+    //Distribute resources to agents with infrastructure on hexes matching the token
     private void produceResource(int token){
         HexTile[] producingTiles = board.getResourceProdTile(token); //getting the relevant hextiles
 
@@ -319,17 +307,11 @@ public class Game{
                 }
             }
         }
-    }
+    }//end of produceResource()
 
     private void resourcePayement(int toBuild) {
         //Cast the currentPlayer to an Agent
         Agent player = (Agent) currentPlayer;
-
-//        //Delegate the "Expert" check to the Agent class
-//        //This uses the new method in Agent class
-//        if (!player.canAfford(toBuild)) {
-//            return false; //Stop here if they don't have enough cards
-//        }
 
         //Since we know they can afford it, we perform the actual transaction
         //Define the recipes locally for the removal process
@@ -348,7 +330,6 @@ public class Game{
                 bank.addCard(transitionCard);
             }
         }
-        //return true; //Payment successful
     }
 
     public List<Edge> getLegalRoadMoves(Agent agent) {
@@ -446,7 +427,7 @@ public class Game{
         return node;
     }
 
-    private boolean canBuildRoad(Edge edge){//CH
+    private boolean canBuildRoad(Edge edge){
         Agent player = (Agent) currentPlayer; //type casting to use Agent methods, not just Trader
         if (edge.isOccupied()) return false;
 
@@ -526,7 +507,7 @@ public class Game{
         return true;
     }//end of canBuildSettlement()
 
-    private boolean canBuildCity(Node node){//CH
+    private boolean canBuildCity(Node node){
         Agent player = (Agent) currentPlayer;
         for (int i = 0; i < player.getInfraCount(); i++){
             Infrastructure infra = player.getInfrastructure()[i];
@@ -604,7 +585,6 @@ public class Game{
         a.buildRoad(roadSpot);
         System.out.println(currentRound + " / " + a.getId() + ": Placed " + phase + " Infrastructure");
         updateBoard();
-        System.out.println("Updated board (4)");//debug
 
         if (phase.equals("Secondary") && settlementSpot != null) {
             giveResourceInitialSetup(settlementSpot, agent);
@@ -790,4 +770,4 @@ public class Game{
         writer.setBaseMap(); //restore base map to original state for next game
         visualizer.destroy();
     }
-}//end of Game class
+}//end of Game() class

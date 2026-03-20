@@ -138,4 +138,4 @@ public class Demonstrator {
             scanner.close();
         }
     }
-}
+}//end of Demonstrator() class

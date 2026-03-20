@@ -21,4 +21,4 @@ public abstract class Location{
         this.occupied = true;
 	}
 
-}//end of Location class
+}//end of Location() class

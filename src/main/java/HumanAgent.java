@@ -30,6 +30,20 @@ public class HumanAgent extends Agent{
                     game.printMessage("Must roll first.");
                     continue;
                 }
+
+                if (this.mustSpendCards()){
+                    //Checking if they have enough resources to build and if there are valid locations for them to even build
+                    boolean canBuild =
+                            this.canAfford(2) && !game.getLegalCityMoves(this).isEmpty() ||
+                            this.canAfford(1) && !game.getLegalSettlementMoves(this).isEmpty() ||
+                            this.canAfford(0) && !game.getLegalRoadMoves(this).isEmpty();
+
+                    if(canBuild){
+                        game.printMessage("You have more than 7 cards. You must build before ending your turn.");
+                        continue;
+                    }
+                    // else the player can't build anything, and we allow them ending their turn
+                }
                 break; //Turn ends
             }
             else {

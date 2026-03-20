@@ -91,8 +91,6 @@ public abstract class Agent extends Trader {
 
 		infrastructure[infraCount++] = settlement;
 		settlementsLeft--;
-		//this.victoryPoints--; //a settlement gives 1 VP and a city gives 2 VP, but after the settlement is upgraded
-							  // to a city, it looses the 1 VP from the old settlement. Or we can change this in City class
 		
 	}
 
@@ -167,18 +165,18 @@ public abstract class Agent extends Trader {
         return discardedCards;
     }
 
-
-	//For City class
-	//Overwrite the Settlement at that specific spot in the array
-	//This effectively deletes the Settlement from the game state
+	//For City class (NOT IN USE RIGHT NOW)
+	//Overwrite the Settlement at that specific spot in the array - effectively deletes the Settlement from the game state
 	public void replaceInfrastructure(int index, Infrastructure newInfra) {
 		if (index >= 0 && index < infraCount) {
 			this.infrastructure[index] = newInfra;
 		}
 	}
 
+	public boolean mustSpendCards(){
+		return getTotalCardCount() > 7;
+	}
 
-	//Methods to be overriden in HumanAgent and RandomAgent
+	//Methods to be overridden in HumanAgent and RandomAgent
 	public abstract void takeTurn(Game game, Scanner scanner);
-
-}
+}//end of Agent() Class

@@ -30,4 +30,4 @@ public class RegularDie implements Dice{
 		// Returns an integer between 1 and 6
 		return myRandomRandy.nextInt(6)+1; 
 	}
-}
+}//end of RegularDie() class

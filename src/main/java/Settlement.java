@@ -50,4 +50,4 @@ public class Settlement extends Infrastructure {
 
         return settlementObj;
     }
-}
+}//end of Settlement() class

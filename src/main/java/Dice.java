@@ -12,4 +12,4 @@ public interface Dice{
      * @return an integer representing the outcome of the roll
      */
 	public int roll();
-}
+}//end of Dice() class

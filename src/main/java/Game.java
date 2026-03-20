@@ -798,7 +798,7 @@ public class Game{
 
     public Board getBoard() {
         return board;
-
+    }
     public boolean isBlocked(int nodeId, Agent agent){//UML
         for (Trader t : getAgents()){
             if (!(t instanceof Agent other)) continue;

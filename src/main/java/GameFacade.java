@@ -9,7 +9,7 @@ public class GameFacade {
     }
 
     public void run(Scanner scanner) {
-        manager.run(scanner);
+        manager.manage(scanner);
     }
 
 }//end of GameFacade class

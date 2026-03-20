@@ -59,7 +59,7 @@ public class GameManager{
         launchVisualizer();
     }//end of Game constructor
 
-    public void run(Scanner scanner){
+    public void manage(Scanner scanner){
         initialSetup(scanner);
 
         for(currentRound = 1; currentRound <= maxRounds; currentRound++){

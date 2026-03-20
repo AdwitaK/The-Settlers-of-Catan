@@ -22,6 +22,8 @@ public class Game{
     private JsonWriter writer;
     private Process visualizer;
 
+    // Field addition for undo/redo mechanism
+    private CommandManager commandManager = new CommandManager();
     private int minForLongestRoad = 5;//UML
     private Agent currentLongestRoadOwner;//UML
     private int currentLongestRoadLen;//UML
@@ -200,7 +202,8 @@ public class Game{
             }
 
             try{
-                player.buildRoad(edge);
+                // Update for undo/redo mechanism
+                commandManager.executeCommand(new BuildRoadCommand(this, player, edge));
                 updateLongestRoadOwner();
             }
             catch(Exception e){
@@ -209,7 +212,6 @@ public class Game{
                 return false;
             }
 
-            resourcePayement(0);
             updateBoard();
             return true;
         }
@@ -229,7 +231,9 @@ public class Game{
             }
 
             try{
-                player.buildSettlement(node);
+
+                // Update for undo/redo mechanism
+                commandManager.executeCommand(new BuildSettlementCommand(this, player, node));
                 recomputeLongestRoad();
             }
             catch(Exception e){
@@ -238,7 +242,6 @@ public class Game{
                 return false;
             }
 
-            resourcePayement(1);
             updateBoard();
             return true;
         }
@@ -257,7 +260,8 @@ public class Game{
             }
 
             try{
-                player.buildCity(node);
+                // Update for undo/redo mechanism
+                commandManager.executeCommand(new BuildCityCommand(this, player, node));
             }
             catch(Exception e){
                 printMessage(e.getMessage());
@@ -265,7 +269,6 @@ public class Game{
                 return false;
             }
 
-            resourcePayement(2);
             updateBoard();
             return true;
         }
@@ -753,7 +756,8 @@ public class Game{
         }//end of if
     }//end of robberPlay()
 
-    private void updateBoard(){
+    // Making this method public so undo/redo mechanism works
+    public void updateBoard(){
         writer.write(this);
     }
 
@@ -783,9 +787,17 @@ public class Game{
         visualizer.destroy();
     }
 
-    public Board getBoard(){//UML
-        return board;
+    // Method additions for undo/redo mechanism
+    public CommandManager getCommandManager() {
+        return commandManager;
     }
+
+    public Trader getBank() {
+        return bank;
+    }
+
+    public Board getBoard() {
+        return board;
 
     public boolean isBlocked(int nodeId, Agent agent){//UML
         for (Trader t : getAgents()){

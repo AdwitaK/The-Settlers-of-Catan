@@ -21,4 +21,9 @@ public abstract class Location{
         this.occupied = true;
 	}
 
+    // The following method is added so the undo/redo mechanism works and respects the encapsulation principle
+    public void clearOccupied() {
+        this.occupied = false;
+    }
+
 }//end of Location() class

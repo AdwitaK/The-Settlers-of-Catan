@@ -75,7 +75,7 @@ public class RandomAgent extends Agent{
 
     //If you have two separate road networks with a small gap (1 or 2 empty edges) between them, random agent should prioritize "linking" them.
     public boolean bridgeTheGap(Game game){//UML
-        Edge e = findLinkingRoad(game.getBoard());
+        Edge e = findLinkingRoad(game);
 
         if (e != null){
             game.processCommand("build road " + e.getStart() + ", " + e.getEnd());
@@ -96,27 +96,28 @@ public class RandomAgent extends Agent{
             return e.getStart();
     }//end of getOtherNode()
 
-    public Edge findLinkingRoad(Board board){ //UML
+    public Edge findLinkingRoad(Game game){ //UML
         for (int nodeId : roadGraph.keySet()){ //every node you touch through roads (not settlements)
-            List<Edge> edges1 = board.getEdgesFromNode(nodeId); //Gets all the edges from that node (2-3)
+            List<Edge> edges1 = game.getBoard().getEdgesFromNode(nodeId); //Gets all the edges from that node (2-3)
 
             for (Edge e1 : edges1){
                 if (e1.isOccupied()) continue; //Ignore edges that already have roads
 
                 int nextNode = getOtherNode(e1, nodeId);
+                if (game.isBlocked(nextNode, this)) continue;
                 //GAP = 1
                 if (isNodeInRoadNetwork(nextNode)){
                     return e1;
                 }
                 //GAP = 2
-                List<Edge> edges2 = board.getEdgesFromNode(nextNode);
+                List<Edge> edges2 = game.getBoard().getEdgesFromNode(nextNode);
 
                 for (Edge e2 : edges2) {
                     if (e2 == e1) continue;
                     if (e2.isOccupied()) continue;
 
                     int nextNode2 = getOtherNode(e2, nextNode);
-
+                    if (game.isBlocked(nextNode2, this)) continue;
                     if (isNodeInRoadNetwork(nextNode2)){
                         return e1;
                     }

@@ -22,6 +22,9 @@ public class Game{
     private JsonWriter writer;
     private Process visualizer;
 
+    // Field addition for undo/redo mechanism
+    private CommandManager commandManager = new CommandManager();
+
     @SuppressWarnings("java:S2245") // Pseudorandom RNG okay for game logic
     public Game(int rounds, int numPlayers, boolean demoMode){
         this.maxRounds = rounds;
@@ -193,7 +196,8 @@ public class Game{
             }
 
             try{
-                player.buildRoad(edge);
+                // Update for undo/redo mechanism
+                commandManager.executeCommand(new BuildRoadCommand(this, player, edge));
             }
             catch(Exception e){
                 System.out.println(e.getMessage());
@@ -220,7 +224,8 @@ public class Game{
             }
 
             try{
-                player.buildSettlement(node);
+                // Update for undo/redo mechanism
+                commandManager.executeCommand(new BuildSettlementCommand(this, player, node));
             }
             catch(Exception e){
                 e.getMessage();
@@ -246,7 +251,8 @@ public class Game{
             }
 
             try{
-                player.buildCity(node);
+                // Update for undo/redo mechanism
+                commandManager.executeCommand(new BuildCityCommand(this, player, node));
             }
             catch(Exception e){
                 e.getMessage();
@@ -741,7 +747,8 @@ public class Game{
         }//end of if
     }//end of robberPlay()
 
-    private void updateBoard(){
+    // Making this method public so undo/redo mechanism works
+    public void updateBoard(){
         writer.write(this);
     }
 
@@ -769,5 +776,18 @@ public class Game{
     private void endVisualizer(){
         writer.setBaseMap(); //restore base map to original state for next game
         visualizer.destroy();
+    }
+
+    // Method additions for undo/redo mechanism
+    public CommandManager getCommandManager() {
+        return commandManager;
+    }
+
+    public Trader getBank() {
+        return bank;
+    }
+
+    public Board getBoard() {
+        return board;
     }
 }//end of Game() class

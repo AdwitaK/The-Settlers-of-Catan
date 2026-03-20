@@ -179,4 +179,22 @@ public abstract class Agent extends Trader {
 
 	//Methods to be overridden in HumanAgent and RandomAgent
 	public abstract void takeTurn(Game game, Scanner scanner);
+
+	// The following four methods are added so the undo/redo mechanism works and respects the encapsulation principle
+	public void restoreRoad() {
+		roadsLeft++;
+	}
+
+	public void restoreSettlement() {
+		settlementsLeft++;
+	}
+
+	public void restoreCity() {
+		citiesLeft++;
+		settlementsLeft--;
+	}
+
+    public void decrementInfraCount() {
+        infraCount--;
+    }
 }//end of Agent() Class

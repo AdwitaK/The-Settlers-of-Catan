@@ -16,13 +16,13 @@ public class JsonWriter {
         setBaseMap();
     }
 
-    public void write(Game game){
+    public void write(Trader [] agents){
         JSONObject gameState = new JSONObject();
 
         JSONArray roads = new JSONArray();
         JSONArray buildings = new JSONArray();
 
-        for(Trader agent : game.getAgents()){
+        for(Trader agent : agents){
             for(Infrastructure infra: ((Agent) agent).getInfrastructure()){
                 if(infra==null){
                     break;
@@ -74,9 +74,6 @@ public class JsonWriter {
         catch(IOException e){
             System.err.println("Something went wrong while updating the base map file");
         }
-
-
-
     }
 
     public void setBaseMap(){
@@ -98,10 +95,6 @@ public class JsonWriter {
                 }
             }
             Files.writeString(Path.of(baseMapFile), board.toString(2));
-
-            //Update state.json timestamp to trigger new render
-            //Files.setLastModifiedTime( Path.of(stateFile), FileTime.fromMillis(System.currentTimeMillis()));
-
         }
         catch(IOException e){
             System.err.println("Something went wrong while updating the base map file");

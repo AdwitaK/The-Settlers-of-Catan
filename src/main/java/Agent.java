@@ -193,9 +193,63 @@ public abstract class Agent extends Trader {
 	//Methods to be overridden in HumanAgent and RandomAgent
 	public abstract void takeTurn(Game game, Scanner scanner);
 
+	public int getLongestRoadLength(Game game){//UML
+		int maxLength = 0;
+
+		for (int i = 0; i < getInfraCount(); i++) {
+			Infrastructure infra = getInfrastructure()[i];
+
+			if (infra instanceof Road){
+				Edge startEdge = (Edge) infra.getLocation();
+
+				Set<Edge> usedEdges = new HashSet<>();
+				maxLength = Math.max(maxLength, dfsEdge(startEdge, usedEdges, game, -1));
+			}
+		}
+		return maxLength;
+	}//end of getLongestRoadLength()
+
+
+	//Find the length of the longest road
+	private int dfsEdge(Edge current, Set<Edge> usedEdges, Game game, int cameFromNode){//UML
+		usedEdges.add(current);
+		int max = 1;
+
+		int[] nodes = {current.getStart(), current.getEnd()};
+
+		for (int node : nodes) {
+			//Prevent going back through same node
+			if (node == cameFromNode) continue;
+
+			if (game.isBlocked(node, this)) continue; //cut off by another player's settlement/city
+
+
+			for (Edge next : game.getBoard().getEdgesFromNode(node)){
+				if (usedEdges.contains(next)) continue;
+				if (!isMyRoad(next)) continue;
+
+				max = Math.max(max, 1 + dfsEdge(next, usedEdges, game, node));
+			}
+		}
+		usedEdges.remove(current);
+		return max;
+	}//end of dfsEdge()
+
+	public boolean isMyRoad(Edge edge){//UML
+		for (int i = 0; i < getInfraCount(); i++){
+			Infrastructure infra = getInfrastructure()[i];
+
+			if (infra instanceof Road && infra.getLocation() == edge){
+				return true;
+			}
+		}
+		return false;
+	}//end of isMyRoad()
+
 	public boolean hasLongestRoad(){//UML
 		return hasLongestRoad;
 	}
+
 	public void setHasLongestRoad(boolean a){//UML
 		hasLongestRoad = a;
 	}

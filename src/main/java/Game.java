@@ -78,7 +78,7 @@ public class Game{
                         }
                     }
                 }
-                //updateLongestRoadOwner(); //db
+                updateLongestRoadOwner();
                 System.out.println(currentRound + " / " + ((Agent)agent).getId() + ": Turn End\n");
             }//end of each agent's turn
 
@@ -201,7 +201,7 @@ public class Game{
 
             try{
                 player.buildRoad(edge);
-                //updateLongestRoadOwner(); //db
+                updateLongestRoadOwner();
             }
             catch(Exception e){
                 printMessage(e.getMessage());
@@ -230,7 +230,7 @@ public class Game{
 
             try{
                 player.buildSettlement(node);
-                //recomputeLongestRoad(); //db
+                recomputeLongestRoad();
             }
             catch(Exception e){
                 printMessage(e.getMessage());
@@ -693,7 +693,7 @@ public class Game{
 
                 if (!discardCards.isEmpty()){
                     //printMessage(": discard half their deck");
-                    System.out.println(currentRound + " / " + player.getId() + ": discard half their deck");
+                    System.out.println(currentRound + " / " + player.getId() + ": Discard half their deck");
                 }
             }
         }
@@ -707,7 +707,7 @@ public class Game{
 
         //System.out.println(currentRound + " / " + ((Agent) currentPlayer).getId() + ": moved the robber to tile " + targetTile.getlandTileID());
         writer.moveRobber(targetTile.getlandTileID());
-        printMessage("moved the robber to tile " + targetTile.getlandTileID());
+        printMessage("Moved the robber to tile " + targetTile.getlandTileID());
 
         //Steal Phase
         Location[] tileNodes = targetTile.getNodes();
@@ -743,11 +743,11 @@ public class Game{
             Card stolenCard = victim.removeRandomCard(random);
             if (stolenCard != null){
                 currentPlayer.addCard(stolenCard);
-                printMessage("steals a card from " + victim.getId());
+                printMessage("Steals a card from " + victim.getId());
                 //System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": steals a card from" + victim.getId());
             }
             else {
-                printMessage(victim.getId() + " has no cards to steal");
+                printMessage(victim.getId() + " Has no cards to steal");
                 //System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + victim.getId() + " has no cards to steal");
             }
         }//end of if
@@ -785,5 +785,72 @@ public class Game{
 
     public Board getBoard(){//UML
         return board;
+    }
+
+    public boolean isBlocked(int nodeId, Agent agent){//UML
+        for (Trader t : getAgents()){
+            if (!(t instanceof Agent other)) continue;
+            if (other == agent) continue; //comparing object identity, not inside value
+
+            for (int i = 0; i < other.getInfraCount(); i++){
+                Infrastructure infra = other.getInfrastructure()[i];
+
+                if (infra instanceof Settlement || infra instanceof City){
+                    Node n = (Node) infra.getLocation();
+
+                    if (n.getId() == nodeId){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }//end of isBlocked()
+
+    public void updateLongestRoadOwner(){//UML
+        Agent a = (Agent) currentPlayer;
+        int length = a.getLongestRoadLength(this);
+
+        //player beats the current record
+        if (length >= minForLongestRoad && length > currentLongestRoadLen){
+            setNewLongestRoadOwner(a, length);
+        }
+    }
+    private void recomputeLongestRoad() {//UML
+        Agent bestAgent = null;
+        int bestLength = 0;
+
+        for (Trader t : agents) {
+            Agent a = (Agent) t;
+            int length = a.getLongestRoadLength(this);
+
+            if (length >= minForLongestRoad && length > bestLength){
+                bestLength = length;
+                bestAgent = a;
+            }
+        }
+        if (bestAgent != null){
+            setNewLongestRoadOwner(bestAgent, bestLength);
+        }
+        else{
+            if (currentLongestRoadOwner != null) {
+                System.out.println(currentRound + " / " + currentLongestRoadOwner.getId() + ": no longer holds the Longest Road");
+            }
+            currentLongestRoadOwner = null;
+            currentLongestRoadLen = 0;
+        }
+    }
+    private void setNewLongestRoadOwner(Agent newOwner, int newLength){//UML
+        currentLongestRoadOwner = newOwner;
+        currentLongestRoadLen = newLength;
+
+        for (Trader t : agents) {
+            Agent a = (Agent) t;
+            a.setHasLongestRoad(a == newOwner);
+        }
+
+        if (newOwner != null) {
+            System.out.println(currentRound + " / " + newOwner.getId() + ": claimed Longest Road at length " + currentLongestRoadLen);
+        }
     }
 }//end of Game() class

@@ -74,7 +74,7 @@ public class RandomAgent extends Agent{
 
 
     //If you have two separate road networks with a small gap (1 or 2 empty edges) between them, random agent should prioritize "linking" them.
-    public boolean bridgeTheGap(Game game){//UML
+    private boolean bridgeTheGap(Game game){//UML
         Edge e = findLinkingRoad(game);
 
         if (e != null){
@@ -96,7 +96,7 @@ public class RandomAgent extends Agent{
             return e.getStart();
     }//end of getOtherNode()
 
-    public Edge findLinkingRoad(Game game){ //UML
+    private Edge findLinkingRoad(Game game){ //UML
         for (int nodeId : roadGraph.keySet()){ //every node you touch through roads (not settlements)
             List<Edge> edges1 = game.getBoard().getEdgesFromNode(nodeId); //Gets all the edges from that node (2-3)
 
@@ -129,7 +129,7 @@ public class RandomAgent extends Agent{
 
 
     //Tries to maintain 2-road safety buffer to prevent opponent from taking the title of longest road owner.
-    public void defensiveRoadBuild(Game game){//UML
+    private void defensiveRoadBuild(Game game){//UML
         if (!hasLongestRoad()) return; // Only defensive if we already own the longest road
         for (Trader t : game.getAgents()){
             Agent other = (Agent) t;
@@ -148,7 +148,7 @@ public class RandomAgent extends Agent{
         }//end of for loop (check all agents)
     }//end of defensiveRoadBuild()
 
-    public Edge findBestExtension(Game game){//UML
+    private Edge findBestExtension(Game game){//UML
         /* Start of finding the best path to extend from to increase road length */
         List<Edge> bestPath = new ArrayList<>();
 

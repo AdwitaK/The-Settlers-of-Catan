@@ -22,6 +22,10 @@ public class Game{
     private JsonWriter writer;
     private Process visualizer;
 
+    private int minForLongestRoad = 5;//UML
+    private Agent currentLongestRoadOwner;//UML
+    private int currentLongestRoadLen;//UML
+
     @SuppressWarnings("java:S2245") // Pseudorandom RNG okay for game logic
     public Game(int rounds, int numPlayers, boolean demoMode){
         this.maxRounds = rounds;
@@ -45,6 +49,9 @@ public class Game{
         }
         board = new Board();
         bank = new Bank();
+
+        currentLongestRoadOwner = null;
+        currentLongestRoadLen = 0;
 
         writer = new JsonWriter("state.json", "visualizer/base_map.json");
         launchVisualizer();
@@ -71,7 +78,7 @@ public class Game{
                         }
                     }
                 }
-
+                //updateLongestRoadOwner(); //db
                 System.out.println(currentRound + " / " + ((Agent)agent).getId() + ": Turn End\n");
             }//end of each agent's turn
 
@@ -194,9 +201,11 @@ public class Game{
 
             try{
                 player.buildRoad(edge);
+                //updateLongestRoadOwner(); //db
             }
             catch(Exception e){
-                System.out.println(e.getMessage());
+                printMessage(e.getMessage());
+                //System.out.println(e.getMessage());
                 return false;
             }
 
@@ -221,9 +230,11 @@ public class Game{
 
             try{
                 player.buildSettlement(node);
+                //recomputeLongestRoad(); //db
             }
             catch(Exception e){
-                e.getMessage();
+                printMessage(e.getMessage());
+                //e.getMessage();
                 return false;
             }
 
@@ -249,7 +260,8 @@ public class Game{
                 player.buildCity(node);
             }
             catch(Exception e){
-                e.getMessage();
+                printMessage(e.getMessage());
+                //e.getMessage();
                 return false;
             }
 
@@ -259,7 +271,7 @@ public class Game{
         }
 
         return false;
-    }
+    }//end of handleBuild()
 
     //Helper method to print; it is public because Agent subclasses use this method too
     public void printMessage(String message){
@@ -309,7 +321,7 @@ public class Game{
         }
     }//end of produceResource()
 
-    private void resourcePayement(int toBuild) {
+    private void resourcePayement(int toBuild) {//db - change name
         //Cast the currentPlayer to an Agent
         Agent player = (Agent) currentPlayer;
 
@@ -769,5 +781,9 @@ public class Game{
     public void endVisualizer(){
         writer.setBaseMap(); //restore base map to original state for next game
         visualizer.destroy();
+    }
+
+    public Board getBoard(){//UML
+        return board;
     }
 }//end of Game() class

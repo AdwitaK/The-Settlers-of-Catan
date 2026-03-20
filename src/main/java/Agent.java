@@ -6,10 +6,7 @@
 
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * This class represents an agent, or a player in the simulated catan game. 
@@ -25,6 +22,11 @@ public abstract class Agent extends Trader {
 	private Colour colour;
 	private Infrastructure[] infrastructure;
 
+	private boolean hasLongestRoad;//UML
+	//Key: A node ID
+	//Value: A Set of all node IDs that are connected to this node via your roads
+	protected Map<Integer, Set<Integer>> roadGraph = new HashMap<>();//UML
+
 
 	public Agent(int id){
 		this.id = id;
@@ -35,6 +37,7 @@ public abstract class Agent extends Trader {
 		this.victoryPoints = 0;
 		this.colour = Colour.getColour(id);
         this.infrastructure = new Infrastructure[24];
+		hasLongestRoad = false;
 	}
 
 	public void buildRoad(Location location){
@@ -47,6 +50,16 @@ public abstract class Agent extends Trader {
 
 		infrastructure[infraCount++] = road;
 		roadsLeft--;
+		int startId = ((Edge) location).getStart();
+		int endId = ((Edge) location).getEnd();
+
+		//add connection both ways
+		roadGraph.putIfAbsent(startId, new HashSet<>());
+		roadGraph.putIfAbsent(endId, new HashSet<>());
+
+		//bidirectional connections
+		roadGraph.get(startId).add(endId); // Add startId NODE to node endId's connections
+		roadGraph.get(endId).add(startId); // Add endId NODE to node startId's connections
 	}
 
 	public void buildCity(Location location) {
@@ -179,4 +192,22 @@ public abstract class Agent extends Trader {
 
 	//Methods to be overridden in HumanAgent and RandomAgent
 	public abstract void takeTurn(Game game, Scanner scanner);
+
+	public boolean hasLongestRoad(){//UML
+		return hasLongestRoad;
+	}
+	public void setHasLongestRoad(boolean a){//UML
+		hasLongestRoad = a;
+	}
+
+	public int getRoadsLeft(){//UML
+		return roadsLeft;
+	}
+
+	public int getCitiesLeft(){//UML
+		return citiesLeft;
+	}
+	public int getSettlementsLeft(){//UML
+		return settlementsLeft;
+	}
 }//end of Agent() Class

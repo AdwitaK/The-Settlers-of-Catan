@@ -89,5 +89,3 @@ public abstract class Trader{
         return resourceHand.size();
     }
 }//end of Trader() class
-
-

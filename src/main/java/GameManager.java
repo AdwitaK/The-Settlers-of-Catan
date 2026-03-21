@@ -24,11 +24,11 @@ public class GameManager{
 
     // Field addition for undo/redo mechanism
     private CommandManager commandManager = new CommandManager();
-    private int minForLongestRoad = 5;//UML
-    private Agent currentLongestRoadOwner;//UML
-    private int currentLongestRoadLen;//UML
+    private int minForLongestRoad = 5;
+    private Agent currentLongestRoadOwner;
+    private int currentLongestRoadLen;
 
-    @SuppressWarnings("java:S2245") // Pseudorandom RNG okay for game logic
+    @SuppressWarnings("java:S2245")
     public GameManager(int rounds, int numPlayers, boolean demoMode){
         this.maxRounds = rounds;
         agents = new Agent[numPlayers];
@@ -143,10 +143,9 @@ public class GameManager{
             String separator = matcher.group(3);
             String second = matcher.group(4);
 
-            // call your existing handleBuild method
             boolean success = handleBuild(type, first, separator, second);
 
-            // feedback messages for build success
+            //messages for build success
             if (success) {
                 if (type.equalsIgnoreCase("road")) {
                     printMessage("Built a road connecting node " + first + " and " + second);
@@ -159,7 +158,6 @@ public class GameManager{
             return success;
         }
 
-        //The command didn't match anything
         printMessage("Invalid command.");
         return false;
     }
@@ -235,7 +233,6 @@ public class GameManager{
             }
             catch(Exception e){
                 printMessage(e.getMessage());
-                //e.getMessage();
                 return false;
             }
 
@@ -262,7 +259,6 @@ public class GameManager{
             }
             catch(Exception e){
                 printMessage(e.getMessage());
-                //e.getMessage();
                 return false;
             }
 
@@ -381,12 +377,6 @@ public class GameManager{
         System.out.println(currentRound + " / " + ((Agent)currentPlayer).getId() + ": Selects node (#" + node.getId() + ")");
         return node;
     }
-
-    // canBuildRoad() moved to Board
-
-    // canBuildSettlement() moved to Board
-
-    // canBuildCity() moved to Board
 
     private void giveResourceInitialSetup(Node node, Trader currentPlayer){
         Agent player = (Agent) currentPlayer;
@@ -521,23 +511,17 @@ public class GameManager{
         }
     }//end of setupRoadInput()
 
-    // noAdjacentSettlements() moved to Board
-
     private void robberPlay() {
-        // Robber logic delegated to Robber.activate() — discard, move, and steal
-        // are all self-contained within the Robber class
+        // Robber logic in to Robber.activate()
         board.getRobber().activate(agents, currentPlayer, bank, board.getTiles(), random, currentRound, writer);
     }//end of robberPlay()
 
-    // Making this method public so undo/redo mechanism works
     public void updateBoard(){
         writer.write(agents);
     }
 
     private void launchVisualizer(){
         try{
-            //ProcessBuilder processBuilder = new ProcessBuilder("python", "visualizer/light_visualizer.py", "visualizer/base_map.json", "--watch");
-            //ProcessBuilder processBuilder = new ProcessBuilder(".venv\\Scripts\\python.exe", "light_visualizer.py",  "base_map.json", "--watch");
             ProcessBuilder processBuilder = new ProcessBuilder(
                     "visualizer\\.venv\\Scripts\\python.exe",
                     "visualizer\\light_visualizer.py",
@@ -552,7 +536,6 @@ public class GameManager{
         catch(IOException e){
             System.err.println(e.getMessage());
         }
-
     }
 
     public void endVisualizer(){
@@ -577,7 +560,7 @@ public class GameManager{
         return board.isBlocked(nodeId, agent, agents);
     }
 
-    public void updateLongestRoadOwner(){//UML
+    public void updateLongestRoadOwner(){
         Agent a = (Agent) currentPlayer;
         int length = a.getLongestRoadLength(this);
 
@@ -586,7 +569,7 @@ public class GameManager{
             setNewLongestRoadOwner(a, length);
         }
     }
-    private void recomputeLongestRoad() {//UML
+    private void recomputeLongestRoad() {
         Agent bestAgent = null;
         int bestLength = 0;
 
@@ -610,7 +593,7 @@ public class GameManager{
             currentLongestRoadLen = 0;
         }
     }
-    private void setNewLongestRoadOwner(Agent newOwner, int newLength){//UML
+    private void setNewLongestRoadOwner(Agent newOwner, int newLength){
         currentLongestRoadOwner = newOwner;
         currentLongestRoadLen = newLength;
 

@@ -102,7 +102,7 @@ public class Board{
         return robber;
     }
 
-    public List<Edge> getEdgesFromNode(int nodeId){//UML
+    public List<Edge> getEdgesFromNode(int nodeId){
         List<Edge> result = new ArrayList<>();
 
         for (Location location : edges){

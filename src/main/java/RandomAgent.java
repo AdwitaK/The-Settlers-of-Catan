@@ -74,7 +74,7 @@ public class RandomAgent extends Agent{
 
 
     //If you have two separate road networks with a small gap (1 or 2 empty edges) between them, random agent should prioritize "linking" them.
-    public boolean bridgeTheGap(GameManager game){//UML
+    public boolean bridgeTheGap(GameManager game){
         Edge e = findLinkingRoad(game.getBoard());
 
         if (e != null){
@@ -84,19 +84,19 @@ public class RandomAgent extends Agent{
         return false;
     }//end of bridgeTheGap()
 
-    private boolean isNodeInRoadNetwork(int nodeId){//UML
+    private boolean isNodeInRoadNetwork(int nodeId){
         return roadGraph.containsKey(nodeId);
     }
 
     //Get other node of an edge
-    private int getOtherNode(Edge e, int nodeId){//UML
+    private int getOtherNode(Edge e, int nodeId){
         if (e.getStart() == nodeId)
             return e.getEnd();
         else
             return e.getStart();
     }//end of getOtherNode()
 
-    public Edge findLinkingRoad(Board board){ //UML
+    public Edge findLinkingRoad(Board board){
         for (int nodeId : roadGraph.keySet()){ //every node you touch through roads (not settlements)
             List<Edge> edges1 = board.getEdgesFromNode(nodeId); //Gets all the edges from that node (2-3)
 
@@ -128,7 +128,7 @@ public class RandomAgent extends Agent{
 
 
     //Tries to maintain 2-road safety buffer to prevent opponent from taking the title of longest road owner.
-    public void defensiveRoadBuild(GameManager game){//UML
+    public void defensiveRoadBuild(GameManager game){
         if (!hasLongestRoad()) return; // Only defensive if we already own the longest road
         for (Trader t : game.getAgents()){
             Agent other = (Agent) t;
@@ -147,7 +147,7 @@ public class RandomAgent extends Agent{
         }//end of for loop (check all agents)
     }//end of defensiveRoadBuild()
 
-    public Edge findBestExtension(GameManager game){//UML
+    public Edge findBestExtension(GameManager game){
         /* Start of finding the best path to extend from to increase road length */
         List<Edge> bestPath = new ArrayList<>();
 
@@ -209,7 +209,7 @@ public class RandomAgent extends Agent{
     }//end of findBestExtension()
 
     //Find the path (list of edges) of the longest road using depth-first search
-    private List<Edge> dfsEdgePath(Edge current, Set<Edge> usedEdges, GameManager game, List<Edge> path){//UML
+    private List<Edge> dfsEdgePath(Edge current, Set<Edge> usedEdges, GameManager game, List<Edge> path){
         usedEdges.add(current);
         path.add(current);
 

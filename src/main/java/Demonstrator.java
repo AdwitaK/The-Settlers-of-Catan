@@ -5,17 +5,7 @@ import java.util.Scanner;
  * Demonstrator class for the Settlers of Catan simulator.
  *
  * This class serves as the entry point for running and demonstrating
- * the Catan simulation. It allows the user to either:
- *
- * 1. Run a deterministic demonstration using a predefined input file for 5 rounds.
- * 2. Play interactively through the console.
- *
- * When file mode is selected, the program reads commands from
- * "demo_input.txt". This allows for reproducible demonstrations
- * of game mechanics and rule enforcement.
- *
- * When console mode is selected, the user can manually enter
- * commands and play through the simulation step by step.
+ * the Catan simulation. It allows the user to either play interactively through the console.
  *
  *
  * The reviewer can run this class directly (either file or normal mode) to observe:
@@ -26,6 +16,7 @@ import java.util.Scanner;
  * - Resource payment and refund logic
  * - Turn progression between human and random agents
  * - Victory point tracking
+ * - undoing/redoing builds within the same round
  *
  * This class focuses purely on demonstration.
  * AlL game logic remains encapsulated inside the Game class,
@@ -43,45 +34,27 @@ public class Demonstrator {
      * Entry point of the simulator.
      *
      * This method starts one full simulation of the Catan game.
-     * The user is prompted to choose whether the game should read
-     * commands from a predefined input file (demo_input.txt) or
-     * accept commands interactively through the console.
-     *
-     * File mode enables:
-     * - Deterministic behaviour
-     * - Reproducible testing
-     * - Clear demonstration of specific scenarios
      *
      * Console mode enables:
      * - Interactive gameplay
      * - Manual testing of commands and game rules
      *
-     * After selecting the input mode, the method initializes the
+     * The method initializes the
      * game with the specified number of rounds and players, and
-     * then runs the simulation using the chosen input source.
+     * then runs the simulation by interacting with the user
+     *
+     * Undo and redo commands can be used to undo/redo
+     * build actions within the same round.
+     *
+     * Computer agents now use smarter algorithms for build strategies
+     * They can recognize opportunities to earn victory points and choose
+     * their moves strategically.
      */
 
     public static void main(String[] args) {
-        Scanner scanner = null;
-        Scanner consoleScanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
         boolean demoMode = false;
         try {
-            while (true){
-                System.out.println("Read from a file (1) or Play through a console (2): ");
-                String userOption = consoleScanner.nextLine();
-                if (userOption.equals("1")){
-                    scanner = new Scanner(new File("demo_input.txt"));
-                    System.out.println("↳ Reading input from file: demo_input.txt");
-                    demoMode = true;
-                    break;
-                }
-                if (userOption.equals("2")){
-                    scanner = consoleScanner;
-                    System.out.println("↳ Using console input");
-                    break;
-                }
-            }
-
             int maxRounds = -1;
 
             while (maxRounds <= 0 || maxRounds > MapSkeleton.maxRounds){
@@ -133,9 +106,6 @@ public class Demonstrator {
         } catch (Exception e) {
             System.err.println("Fatal Game Error: " + e.getMessage());
         }
-        consoleScanner.close();
-        if (scanner != null) {
-            scanner.close();
-        }
+        scanner.close();
     }
 }//end of Demonstrator() class

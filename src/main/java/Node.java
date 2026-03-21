@@ -14,7 +14,7 @@ public class Node extends Location {
         this.id = id;
 	}
 
-    public int getId(){//CH
+    public int getId(){
         return id;
     }
 }//end of Node() class

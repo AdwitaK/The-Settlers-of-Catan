@@ -256,14 +256,14 @@ public abstract class Agent extends Trader {
 		hasLongestRoad = a;
 	}
 
-	public int getRoadsLeft(){//UML
+	public int getRoadsLeft(){
 		return roadsLeft;
 	}
 
-	public int getCitiesLeft(){//UML
+	public int getCitiesLeft(){
 		return citiesLeft;
 	}
-	public int getSettlementsLeft(){//UML
+	public int getSettlementsLeft(){
 		return settlementsLeft;
 	}
 }//end of Agent() Class

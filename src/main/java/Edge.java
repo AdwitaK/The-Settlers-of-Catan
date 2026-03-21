@@ -14,10 +14,10 @@ public class Edge extends Location {
         this.end = end;
 	}
 
-    public int getStart(){//CH
+    public int getStart(){
         return start;
     }
-    public int getEnd(){//CH
+    public int getEnd(){
         return end;
     }
 }//end of Edge() class

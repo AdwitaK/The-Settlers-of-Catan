@@ -38,6 +38,4 @@ public class MapSkeleton {
         { 31, 32, 33, 7, 29, 30 }
 
     };
-
-
-}
+}//end of MapSkeleton()

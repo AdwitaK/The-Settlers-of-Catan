@@ -74,5 +74,5 @@ public class HumanAgent extends Agent{
                 }
             }
         }
-    }
-}
+    }//end of takeTurn
+}//End of HumanAgent()

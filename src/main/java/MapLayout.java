@@ -13,4 +13,4 @@ public class MapLayout {
         ResourceType.WOOL
     };
     
-}
+}//end of MapLayout()

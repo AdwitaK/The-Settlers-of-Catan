@@ -59,4 +59,4 @@ public class BuildCityCommand implements Command {
 
         game.updateBoard();
     }
-}
+}//End of BuildCityCommand()

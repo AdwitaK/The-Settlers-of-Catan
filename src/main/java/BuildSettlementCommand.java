@@ -66,4 +66,4 @@ public class BuildSettlementCommand implements Command {
 
         game.updateBoard();
     }
-}
+}//End of BuildSettlementCommand()

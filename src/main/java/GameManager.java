@@ -317,8 +317,6 @@ public class GameManager{
         }
     }//end of produceResource()
 
-
-
     public List<Edge> getLegalRoadMoves(Agent agent) {
         return board.getLegalRoadMoves(agent, agents);
     }
@@ -610,4 +608,4 @@ public class GameManager{
     public void setCurrentPlayer(Trader currentPlayer){
         this.currentPlayer = currentPlayer;
     }
-}//end of GameManager class
+}//end of GameManager() class

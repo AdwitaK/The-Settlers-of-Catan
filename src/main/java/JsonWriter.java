@@ -100,4 +100,4 @@ public class JsonWriter {
             System.err.println("Something went wrong while updating the base map file");
         }
     }
-}
+}//end of JsonWriter()

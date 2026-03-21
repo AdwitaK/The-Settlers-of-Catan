@@ -34,4 +34,4 @@ public class CommandManager {
             undoStack.push(command);
         }
     }
-}
+}//End of CommandManager()

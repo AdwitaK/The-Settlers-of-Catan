@@ -9,7 +9,7 @@ Our implementation is organized around three patterns chosen to keep game logic 
 - Command: player actions are encapsulated as command objects, making it easy to validate a move before executing it, and allow undo/redo actions
 - Facade: a single entry point to coordinate the underlying subsystems so the user can interact with one clean interface instead of having to manage internals directly   
 
-UML class diagrams for each assignment phase are in ```/docs```.
+UML class diagrams for each assignment phase are in ```/docs```
 
 ## Setup Instructions
 1. Clone this repository

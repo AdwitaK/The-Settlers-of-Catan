@@ -1,8 +1,15 @@
-# Team-12-Catan
+# The Settlers of Catan
 
-SonarQube Badge: 
+A Java implementation of the core Settlers of Catan ruleset, built as a team project for a software design course.
+The focus of the project was to apply sound OOP design, including SOLID and GRASP principles along with targeted design patterns to manage game state, plater actions and turn logic cleanly.
 
-[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=AdwitaK_The-Settlers-of-Catan)](https://sonarcloud.io/summary/new_code?id=AdwitaK_The-Settlers-of-Catan)
+## Architecture
+Our implementation is organized around three patterns chosen to keep game logic decoupled and testable:
+- Observer: board and game-state changes are broadcast to listeners instead of polling, so all components stay in sync without being tightly coupled
+- Command: player actions are encapsulated as command objects, making it easy to validate a move before executing it, and allow undo/redo actions
+- Facade: a single entry point to coordinate the underlying subsystems so the user can interact with one clean interface instead of having to manage internals directly   
+
+UML class diagrams for each assignment phase are in ```/docs```.
 
 ## Setup Instructions
 1. Clone this repository
@@ -22,27 +29,7 @@ SonarQube Badge:
     cd catanatron
     pip install -e ".[web,gym,dev]"
    ```
+## Testing and Quality
+Unit tests cover the core logic using JUnit. Static analysis was run using SonarQube.
 
-After following these steps, the setup to allow the visualizer to function is completed. 
-## Assignment checklist
-
-### Technical content
-- [x] Every task in the assignment addressed
-
-### Delivery
-
-#### Software
-- [x] Requirements addressed
-- [x] Software properly tested
-- [x] Demonstrator implemented and documented
-
-#### Management
-- [x] SonarQube analysis linked in the README file
-- [x] Kanban board maintained and publicly available
-- [x] Commits linked to work items
-- [x] Deliverable tagged
-
-#### Report
-- [x] Reflection points elaborated
-- [x] Report written
-- [x] Report submitted
+[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=AdwitaK_The-Settlers-of-Catan)](https://sonarcloud.io/summary/new_code?id=AdwitaK_The-Settlers-of-Catan)
